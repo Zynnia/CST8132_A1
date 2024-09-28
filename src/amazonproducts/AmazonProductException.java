@@ -1,5 +1,13 @@
 package amazonproducts;
 
-public class AmazonProductException {
+public class AmazonProductException extends Exception {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
+	public AmazonProductException(String message) {
+		super(message);
+	}
 }
