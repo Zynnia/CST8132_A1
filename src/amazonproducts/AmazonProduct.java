@@ -1,6 +1,8 @@
 package amazonproducts;
 
+
 public class AmazonProduct {
+	
 	private String[] title;
 	private String name;
 	private String imageURL;
@@ -12,7 +14,11 @@ public class AmazonProduct {
 	private float actualPrice;
 	
 
-	
+	/**
+	 * Constructor recieves arrays of string
+	 * Constructs amazon products based on the data receives
+	 * @param items : Array of product properties
+	 */
 	AmazonProduct(String[] items) {
 		
 		id = Integer.parseInt(items[0]);
@@ -79,7 +85,16 @@ public class AmazonProduct {
 	
 	//Place holder for now
 	public String toString() {
-		String str = "[ " + id + ", " + name + ", " +imageURL + ", " +  rating + ", " + nRatings + ", " + discountPrice + ", " + actualPrice + "]"; 
+		
+		String str = "[ " 
+				+ id + ", " 
+				+ name + ", " 
+				+ imageURL + ", "
+				+ rating + ", " 
+				+ nRatings + ", " 
+				+ discountPrice + ", "
+				+ actualPrice + "]"; 
+	
 		return str;
 	}
 }
