@@ -7,6 +7,8 @@ public class AmazonProduct {
 	private String name;
 	private String imageURL;
 	private String link;
+	private AmazonProductCategory category;
+	private AmazonProductSubCategory subCategory;
 	private int id;
 	private int nRatings;
 	private float rating;
@@ -24,8 +26,8 @@ public class AmazonProduct {
 		id = Integer.parseInt(items[0]);
 		
 		name = items[1];
-		//skip main and sub category 
-		//Remember to add it later
+		category = new AmazonProductCategory(items[2]);
+		subCategory = new AmazonProductSubCategory(items[3]);
 		imageURL = items[4];
 		link = items[5];
 		rating = Float.parseFloat(items[6].replace(",", ""));
@@ -89,6 +91,8 @@ public class AmazonProduct {
 		String str = "[ " 
 				+ id + ", " 
 				+ name + ", " 
+				+ category.getCategoryName() + ", "
+				+ subCategory.getSubCategory() + ", "
 				+ imageURL + ", "
 				+ rating + ", " 
 				+ nRatings + ", " 
