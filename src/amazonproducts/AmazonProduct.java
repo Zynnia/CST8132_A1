@@ -15,13 +15,31 @@ public class AmazonProduct {
 	private float discountPrice;
 	private float actualPrice;
 	
-
+	
+	public AmazonProduct(int id, String name, AmazonProductCategory category,
+			AmazonProductSubCategory subCategory, String imageURL, String link,
+			float rating, int nRatings, float discountPrice, float actualPrice) {
+		
+		this.id = id;
+		this.name = name;
+		this.category = category;
+		this.subCategory = subCategory;
+		this.imageURL = imageURL;
+		this.link = link;
+		this.rating = rating;
+		this.nRatings = nRatings;
+		this.discountPrice = discountPrice;
+		this.actualPrice = actualPrice;
+		
+	}
+	
+	
 	/**
 	 * Constructor receives arrays of string
 	 * Constructs amazon products based on the data receives
 	 * @param items : Array of product properties
 	 */
-	AmazonProduct(String[] items) {
+	public AmazonProduct(String[] items) {
 		
 		id = Integer.parseInt(items[0]);
 		
@@ -88,7 +106,7 @@ public class AmazonProduct {
 	//Place holder for now
 	public String toString() {
 		
-		String str = "[ " 
+		String str = "["
 				+ id + ", " 
 				+ name + ", " 
 				+ category.getCategoryName() + ", "

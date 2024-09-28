@@ -3,7 +3,12 @@ package amazonproducts;
 public class AmazonProductUtil {
 	
 	
-	
+	/**
+	 * The method returns a cleaned float.
+	 * Parses string for commas and currency symbols.
+	 * @param str : String represented the monetary value
+	 * @return a cleaned converted float
+	 */
 	public static float convertToFloat(String str) {
 		String num = "";
 		if (!Character.isDigit(str.charAt(0))) {
@@ -15,7 +20,11 @@ public class AmazonProductUtil {
 		return Float.parseFloat(num.replace(",", ""));
 	}
 	
-	
+	/**
+	 * Line reader code from Lab 2
+	 * @param line : CSV String to parse
+	 * @return An array of strings containing the parsed words
+	 */
 	public static String[] lineReader(String line) {
 		 	
 			//Max Array size is limited to 10;

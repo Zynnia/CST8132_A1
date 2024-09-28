@@ -17,7 +17,7 @@ public class AmazonProductList {
 		bestsellers.add(obj);
 	}
 	
-	public void createList(String csvFile) {
+	public void createList(String csvFile) throws AmazonProductException  {
 		FileReader fr;
 		try {
 			fr = new FileReader(csvFile);
@@ -35,28 +35,28 @@ public class AmazonProductList {
 			}
 			br.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new AmazonProductException("Invalid file");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new AmazonProductException("Invalid file");
 		}
 		
 		
 		
 	}
 	
-	public void delete(int val) {
+	public void delete(int val) throws AmazonProductException {
 		int n = getSize();
 		
 		if (val >= n|| val < 0) {
-			//Throw  error
+			throw new AmazonProductException("Invalid input");
 		}
 		
 		bestsellers.remove(val);
 	}
 	
-	public void edit(int idx, AmazonProduct prod) {}
+	public void edit(int idx, AmazonProduct prod) {
+		//TODO
+	}
 		
 	
 	/*
@@ -77,9 +77,12 @@ public class AmazonProductList {
 		}
 	}
 	
-	public void saveList(String str) {}
+	public void saveList(String str) {
+		//TODO
+	}
 	
 	public void search(String str) {
+		//TODO
 		for (AmazonProduct obj: bestsellers) {
 			
 		}
