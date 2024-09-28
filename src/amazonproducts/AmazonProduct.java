@@ -17,7 +17,7 @@ public class AmazonProduct {
 	
 
 	/**
-	 * Constructor recieves arrays of string
+	 * Constructor receives arrays of string
 	 * Constructs amazon products based on the data receives
 	 * @param items : Array of product properties
 	 */
@@ -27,7 +27,7 @@ public class AmazonProduct {
 		
 		name = items[1];
 		category = new AmazonProductCategory(items[2]);
-		subCategory = new AmazonProductSubCategory(items[3]);
+		subCategory = new AmazonProductSubCategory(items[3], category);
 		imageURL = items[4];
 		link = items[5];
 		rating = Float.parseFloat(items[6].replace(",", ""));
@@ -54,7 +54,7 @@ public class AmazonProduct {
 	}
 	
 	public AmazonProductCategory getMain_category() {
-		return null;
+		return category;
 	}
 	
 	public String getName() {
@@ -70,7 +70,7 @@ public class AmazonProduct {
 	}
 	
 	public AmazonProductSubCategory getSub_category() {
-		return null;
+		return subCategory;
 	}
 	
 	public String[] getTitle() {

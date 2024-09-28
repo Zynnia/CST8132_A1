@@ -1,13 +1,26 @@
 package amazonproducts;
 
 public class AmazonProductSubCategory {
-	private String subCategory;
+	private String subCategoryName;
+	private AmazonProductCategory category;
 	
-	public AmazonProductSubCategory(String subCategory) {
-		this.subCategory = subCategory;
+	public AmazonProductSubCategory(String subCategoryName, AmazonProductCategory category) {
+		this.subCategoryName = subCategoryName;
+		this.category = category;
+	}
+	
+	public AmazonProductCategory getCategory() {
+		return category;
+	}
+	
+	public void setCategory(AmazonProductCategory category) {
+		this.category = category;
 	}
 	
 	public String getSubCategory() {
-		return subCategory;
+		return subCategoryName;
+	}
+	public void setSubCategory(String subCategoryName) {
+		this.subCategoryName = subCategoryName;
 	}
 }
