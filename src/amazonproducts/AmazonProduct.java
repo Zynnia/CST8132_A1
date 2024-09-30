@@ -103,6 +103,45 @@ public class AmazonProduct {
 		this.title = title;
 	}
 	
+	public void setActual_price(float actualPrice) {
+		 this.actualPrice = actualPrice;
+	}
+	
+	public void setDiscount_price(float discountPrice) {
+		this.discountPrice = discountPrice;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public void setLink(String link) {
+		this.link = link;
+	}
+	
+	public void setMain_category(AmazonProductCategory category) {
+		this.category = category;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void setNo_of_rating(int nRatings) {
+		this.nRatings = nRatings;
+	}
+	
+	public void setRatings(float rating) {
+		this.rating = rating;
+	}
+	
+	public void setSub_category(AmazonProductSubCategory subCategory) {
+		this.subCategory = subCategory;
+	}
+	
+	public void setUrlImage(String imageURL) {
+		this.imageURL = imageURL;
+	}
 	//Place holder for now
 	public String toString() {
 		

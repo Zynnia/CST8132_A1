@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class AmazonProductManager {
 	
-	static Scanner input = new Scanner(System.in);
+	public static Scanner input = new Scanner(System.in);
 	private AmazonProductList productList = new AmazonProductList();
 	
 	public AmazonProductManager() {}
@@ -20,7 +20,7 @@ public class AmazonProductManager {
 		System.out.print("Name of file to create Productlist: ");
 		String path  = input.nextLine();
 		//Testing purposes.
-		//path = "Sample-Amazon-Products-v2.csv";
+		path = "Sample-Amazon-Products-v2.csv";
 		try {
 			productList.createList(path);
 		
@@ -102,8 +102,22 @@ public class AmazonProductManager {
 		productList.add(product);
 	}
 	
-	//TODO
+	
 	public void editProduct() throws AmazonProductException {
+		
+		System.out.print("Enter product index to edit: ");
+		String idx = input.nextLine();
+		int val = -1;
+		try {
+			val = Integer.parseInt(idx);
+			AmazonProduct product = productList.findProductByIndex(val);
+			productList.edit(val, product);
+			
+		} catch (AmazonProductException m) {
+			throw m;
+		} catch (NumberFormatException e) {
+			throw new AmazonProductException("Invalid index");
+		}
 		
 	}
 	
@@ -112,7 +126,7 @@ public class AmazonProductManager {
 		System.out.print("Enter a position to delete: ");
 		
 		try {
-			String usrInput = input.next();
+			String usrInput = input.nextLine();
 			for (int i = 0; i < usrInput.length(); ++i) {
 				if (!Character.isDigit(usrInput.charAt(i))) {
 					throw new AmazonProductException("Invalid Input");
@@ -126,9 +140,14 @@ public class AmazonProductManager {
 		
 	}
 	
+	//TODO
 	public void saveProductList() throws AmazonProductException {}
 	
-	public void search() throws AmazonProductException {}
+	public void search() throws AmazonProductException {
+		System.out.print("What to search: ");
+		String p = input.nextLine();
+		productList.search(p);
+	}
 	
 	
 	public void manageProductList() {
@@ -143,14 +162,14 @@ public class AmazonProductManager {
 			try {
 				usrInput = input.nextLine();
 				
-				//Check if input is a number
-				for (int i = 0; i < usrInput.length(); ++i) {
-					if (!Character.isDigit(usrInput.charAt(i))) {
-						throw new AmazonProductException("Invalid Input");
-					}
+				if (usrInput.isEmpty()) {
+					throw new AmazonProductException("Invalid Input");
 				}
-				option = Integer.parseInt(usrInput);
-				
+				try {
+					option = Integer.parseInt(usrInput);
+				} catch (NumberFormatException e) {
+					throw new AmazonProductException("Invalid Input");
+				}
 				//throw exception if none of case match
 				//ie the input is a valid number but is outside acceptable
 				//range
@@ -184,7 +203,7 @@ public class AmazonProductManager {
 				}
 			} catch (AmazonProductException m) {
 				//Empty Block
-			}
+			} 
 		}
 		
 	}
