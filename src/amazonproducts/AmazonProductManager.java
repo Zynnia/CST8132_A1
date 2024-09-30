@@ -18,11 +18,11 @@ public class AmazonProductManager {
 	public void createProductList() throws AmazonProductException {
 		
 		System.out.print("Name of file to create Productlist: ");
-		String path  = input.next();
+		String path  = input.nextLine();
 		//Testing purposes.
 		//path = "Sample-Amazon-Products-v2.csv";
 		try {
-		productList.createList(path);
+			productList.createList(path);
 		
 		} catch (AmazonProductException m) {
 			throw m;
@@ -40,18 +40,6 @@ public class AmazonProductManager {
 	//TODO WIll do this later
 	// Need to add error checking 
 	public void addProduct() throws AmazonProductException {
-		String name;
-		String imageURL;
-		String link;
-		AmazonProductCategory category;
-		AmazonProductSubCategory subCategory;
-		int id;
-		int nRatings;
-		float rating;
-		float discountPrice;
-		float actualPrice;
-		
-		String usrInput = "";
 		
 		String[] prompts = {
 				"Enter product id: ",
@@ -65,13 +53,50 @@ public class AmazonProductManager {
 				"Enter product discount price: ",
 				"Enter product actual price: " 
 				};
-		String[] ps5 = new String[10];
+		String[] usrInput = new String[10];
 		
 		for (int i = 0; i < prompts.length; ++i) {
+			
 			System.out.print(prompts[i]);
-			ps5[i] = input.next();
+			usrInput[i] = input.nextLine();
 		}
-		AmazonProduct product = new AmazonProduct(ps5);
+		
+		/*
+		 * Here we are verifying if the data is valid. 
+		 * If not throw Amazon product exception
+		 */
+		for (int i = 0; i < prompts.length; ++i) {
+			if (usrInput[i].isEmpty()) {
+				throw new AmazonProductException("Invalid Data!");
+			}
+			try {
+				if (i == 0 || i == 7) {
+					Integer.parseInt(usrInput[i]);
+				}
+				if (i == 6 || i == 8 || i == 9) {
+					Float.parseFloat(usrInput[i]);
+				}
+			} catch (NumberFormatException e) {
+				throw new AmazonProductException("Invalid Data!");
+			}
+		}
+		
+		//Assign the input to the correct fields
+		int id = Integer.parseInt(usrInput[0]);
+		String name = usrInput[1];
+		AmazonProductCategory category = new AmazonProductCategory(usrInput[2]);
+		AmazonProductSubCategory subCategory = new AmazonProductSubCategory(usrInput[3], category);
+		String imageURL = usrInput[4];
+		String link = usrInput[5];
+		float rating = Float.parseFloat(usrInput[6]);
+		int nRatings = Integer.parseInt(usrInput[7]);		
+		float discountPrice = Float.parseFloat(usrInput[8]);
+		float actualPrice = Float.parseFloat(usrInput[9]);
+		
+		//Make a new amazon product with the given field
+		AmazonProduct product = new AmazonProduct(id, name, category,
+				subCategory, imageURL, link, rating, nRatings, discountPrice,
+				actualPrice);
 		
 		
 		productList.add(product);
@@ -112,55 +137,55 @@ public class AmazonProductManager {
 		int option = -1;
 		String usrInput;
 		while (option != 0) {
-		showMenu();
-		
-		System.out.print("Choose an option: ");
-		try {
-			usrInput = input.next();
+			showMenu();
 			
-			//Check if input is a number
-			for (int i = 0; i < usrInput.length(); ++i) {
-				if (!Character.isDigit(usrInput.charAt(i))) {
+			System.out.print("Choose an option: ");
+			try {
+				usrInput = input.nextLine();
+				
+				//Check if input is a number
+				for (int i = 0; i < usrInput.length(); ++i) {
+					if (!Character.isDigit(usrInput.charAt(i))) {
+						throw new AmazonProductException("Invalid Input");
+					}
+				}
+				option = Integer.parseInt(usrInput);
+				
+				//throw exception if none of case match
+				//ie the input is a valid number but is outside acceptable
+				//range
+				switch (option) {
+				case 0:
+					exit();
+					break;
+				case 1:
+					createProductList();
+					break;
+				case 2:
+					displayProductList();
+					break;
+				case 3:
+					addProduct();
+					break;
+				case 4:
+					editProduct();
+					break;
+				case 5:
+					deleteProduct();
+					break;
+				case 6:
+					saveProductList();
+					break;
+				case 7:
+					search();
+					break;
+				default:
 					throw new AmazonProductException("Invalid Input");
 				}
+			} catch (AmazonProductException m) {
+				//Empty Block
 			}
-			option = Integer.parseInt(usrInput);
-			
-			//throw exception if none of case match
-			//ie the input is a valid number but is outside acceptable
-			//range
-			switch (option) {
-			case 0:
-				exit();
-				break;
-			case 1:
-				createProductList();
-				break;
-			case 2:
-				displayProductList();
-				break;
-			case 3:
-				addProduct();
-				break;
-			case 4:
-				editProduct();
-				break;
-			case 5:
-				deleteProduct();
-				break;
-			case 6:
-				saveProductList();
-				break;
-			case 7:
-				search();
-				break;
-			default:
-				throw new AmazonProductException("Invalid Input");
-			}
-		} catch (AmazonProductException m) {
-			//Empty Block
 		}
-	}
 		
 	}
 	/**
