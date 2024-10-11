@@ -1,12 +1,17 @@
 package amazonproducts;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class AmazonProductList {
+	
 	private final int NUMCOLS = 10;
 	private String[] title;
 	private ArrayList<AmazonProduct> bestsellers = new ArrayList<AmazonProduct>();
@@ -18,19 +23,67 @@ public class AmazonProductList {
 	}
 	
 	public void createList(String csvFile) throws AmazonProductException  {
-		FileReader fr;
+		//FileReader fr;
 		try {
-			fr = new FileReader(csvFile);
-			BufferedReader br = new BufferedReader(fr);
+			
+			/*
+			 * Need to check for the following still
+			 * What if the file is blank.
+			 * What if the file is partially incomplete
+			 * ie Some entries are null. Do we discard?
+			 * 
+			 */
+			
+			
+			/* This code is used to fix microsoft issues
+			 */ 
+			FileInputStream fr = new FileInputStream(csvFile);
+			InputStreamReader isr = new InputStreamReader(fr, StandardCharsets.UTF_8);
+			BufferedReader br = new BufferedReader(isr);
+			
+			
+			
+			//fr = new FileReader(csvFile);
+			//BufferedReader br = new BufferedReader(fr);
 			String line = "";
-			//Note issue here
+		
+			//First line contains the header of the csv file. (Assume it always exists)
 			line = br.readLine();
+			
+			if (line != null && title == null)
+				title = AmazonProductUtil.lineReader(line);
+			
 			line = br.readLine(); //skip the first line for testing purposes
+			
 			while (line != null) {
 				
 				String[] lineInfo = AmazonProductUtil.lineReader(line);
-				AmazonProduct item = new AmazonProduct(lineInfo);
-				bestsellers.add(item);
+				
+				boolean isValid = true;
+				
+				
+				//Check first if the entries are not empty
+				 
+				for (String entry: lineInfo) {
+					
+					if (entry == null || entry.isEmpty() || entry.isBlank()) {
+						isValid = false;
+						break;
+					}
+				}
+				
+				if (isValid) {
+					// Verify if the numerical inputs are valid
+					if (AmazonProductUtil.isValidInt(lineInfo[0]) &&
+						AmazonProductUtil.isValidInt(lineInfo[7]) &&
+						AmazonProductUtil.isValidFloat(lineInfo[6]) &&
+						AmazonProductUtil.isValidFloat(lineInfo[8]) &&
+						AmazonProductUtil.isValidFloat(lineInfo[9])
+						) {
+						AmazonProduct item = new AmazonProduct(lineInfo);
+						bestsellers.add(item);
+					}
+				}
 				line = br.readLine();
 			}
 			br.close();
@@ -39,16 +92,19 @@ public class AmazonProductList {
 		} catch (IOException e) {
 			throw new AmazonProductException("Invalid file");
 		}
-		
-		
-		
 	}
 	
 	public void delete(int val) throws AmazonProductException {
 		int n = getSize();
 		
+		//Check if the bestsellers 
+		if (n == 0) {
+			throw new AmazonProductException("List is Empty");
+		}
+		
+		//validate if idx is within the size of the bestsellers list
 		if (val >= n || val < 0) {
-			throw new AmazonProductException("Invalid input");
+			throw new AmazonProductException("Input value between 0 and " + (n - 1));
 		}
 		
 		bestsellers.remove(val);
@@ -96,6 +152,7 @@ public class AmazonProductList {
 			}
 		}
 		
+		//Manually assign the properties
 		for (int i = 0; i < NUMCOLS; ++i) {
 			if (!usrInput[i].isEmpty()) {
 				
@@ -138,8 +195,12 @@ public class AmazonProductList {
 	public AmazonProduct findProductByIndex(int idx) throws AmazonProductException {
 		int n = getSize();
 		
+		if (n == 0) {
+			throw new AmazonProductException("List is Empty");
+		}
+		
 		if (idx >= n || idx < 0) {
-			throw new AmazonProductException("Invalid input");
+			throw new AmazonProductException("Input value between 0 and " + (n - 1));
 		}
 		return bestsellers.get(idx);
 	}
@@ -152,37 +213,90 @@ public class AmazonProductList {
 		System.out.println("PRODUCTLIST .................");
 		System.out.println("BOOKLIST .................");
 		for (AmazonProduct s: bestsellers) {
-			System.out.println(s.toString());
+			System.out.println("[" + s.toString() + "]");
 		}
 		System.out.println("............................");
 	}
 	
-	public void saveList(String str) {
-		//TODO
+	/**
+	 *  This method writes the information stored in bestsellers
+	 *  to a csv file.
+	 * @param str : the name of the file to write to.
+	 * @throws AmazonProductException : Throws exception if the filename is empty, list is empty, or failure to write
+	 */
+	public void saveList(String str) throws AmazonProductException {
+		//check validity of the filename str
+		if (str.isEmpty() || str == null || str.isBlank()) {
+			throw new AmazonProductException("Filename is Empty!");
+		}
+		
+		//Make sure the bestseller list is not empty
+		if (getSize() == 0) {
+			throw new AmazonProductException("List is Empty. Nothing to write");
+		}
+		try {
+			FileWriter fr = new FileWriter(str);
+			BufferedWriter br = new BufferedWriter(fr);
+			
+			//Write the title to the csv file
+			if (title != null) {
+				String header = "";
+				for (int i = 0; i < NUMCOLS; ++i) {
+					if (i != NUMCOLS - 1) {
+						header += title[i] + ",";
+					} else {
+						header += title[i];
+					}
+				
+				}	
+				br.write(header);
+				br.newLine();
+			}
+			//write content of the bestsellers arraylist to the csv files
+			for (AmazonProduct obj : bestsellers) {
+				String name =  "\"" + obj.getName() + "\"";
+				String strToWrite = obj.getId() + "," 
+						+ name + "," 
+						+ "\"" + obj.getMain_category().getCategoryName() + "\""+ ","
+						+ "\"" + obj.getSub_category().getSubCategory()+ "\"" + ","
+						+ obj.getUrlImage() + ","
+						+ obj.getLink() + ","
+						+ obj.getRatings() + "," 
+						+ obj.getNo_of_rating() + "," 
+						+ obj.getDiscount_price() + ","
+						+ obj.getActual_price();
+				br.write(strToWrite);
+				br.newLine();
+			}
+			br.close();
+		} catch (IOException e) {
+			throw new AmazonProductException("Fail to perform Write operation!");
+		}
+		
 	}
 	
 	public void search(String str) throws AmazonProductException {
 		
-		if (str.isEmpty()) {
+		if (str.isEmpty() || str.isBlank() || str == null) {
 			throw new AmazonProductException("Search Term Cannot Be Empty!");
 		}
 		
+		boolean found = false;
+		
 		for (AmazonProduct obj: bestsellers) {
-			boolean isSubstring = false;
 			
 			//Convert All entries into a single string
 			String objEntries = obj.toString().toLowerCase();
-			//Remove the square brackets
-			String searchTerm = objEntries.substring(1, objEntries.length() - 1);
 			
-			if (searchTerm.contains(str.toLowerCase())) {
-				isSubstring = true;
+			if (objEntries.contains(str.toLowerCase())) {
+				System.out.println("[" + obj.toString() + "]");
+				found = true;
 			}
 			
-			if (isSubstring) {
-				System.out.println(obj.toString());
-			}
 			
+		}
+		if (!found) {
+			System.out.println("No match!");
 		}
 	}
 	

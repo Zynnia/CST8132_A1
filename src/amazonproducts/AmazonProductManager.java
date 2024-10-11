@@ -8,8 +8,6 @@ public class AmazonProductManager {
 	
 	public AmazonProductManager() {}
 	
-	public void exit() {}
-	
 	/**
 	 * Prompt user to enter a file to open.
 	 * Load the file into AmazonProductList
@@ -20,13 +18,10 @@ public class AmazonProductManager {
 		System.out.print("Name of file to create Productlist: ");
 		String path  = input.nextLine();
 		//Testing purposes.
-		path = "Sample-Amazon-Products-v2.csv";
-		try {
-			productList.createList(path);
+		//path = "Sample-Amazon-Products-v2.csv";
+		//path = "Amazon-Products.csv";
+		productList.createList(path);
 		
-		} catch (AmazonProductException m) {
-			throw m;
-		}
 		System.out.println("Product List created successfully!");
 	}
 	
@@ -37,8 +32,6 @@ public class AmazonProductManager {
 		productList.printList();
 	}
 	
-	//TODO WIll do this later
-	// Need to add error checking 
 	public void addProduct() throws AmazonProductException {
 		
 		String[] prompts = {
@@ -53,10 +46,12 @@ public class AmazonProductManager {
 				"Enter product discount price: ",
 				"Enter product actual price: " 
 				};
+		
+		//Array to store user responses
 		String[] usrInput = new String[10];
 		
+		//Prompt user
 		for (int i = 0; i < prompts.length; ++i) {
-			
 			System.out.print(prompts[i]);
 			usrInput[i] = input.nextLine();
 		}
@@ -66,10 +61,12 @@ public class AmazonProductManager {
 		 * If not throw Amazon product exception
 		 */
 		for (int i = 0; i < prompts.length; ++i) {
+			//check if the input is empty
 			if (usrInput[i].isEmpty()) {
 				throw new AmazonProductException("Invalid Data!");
 			}
 			try {
+				//verify if the numerical inputs are valid
 				if (i == 0 || i == 7) {
 					Integer.parseInt(usrInput[i]);
 				}
@@ -112,7 +109,6 @@ public class AmazonProductManager {
 			val = Integer.parseInt(idx);
 			AmazonProduct product = productList.findProductByIndex(val);
 			productList.edit(val, product);
-			
 		} catch (AmazonProductException m) {
 			throw m;
 		} catch (NumberFormatException e) {
@@ -127,56 +123,65 @@ public class AmazonProductManager {
 		
 		try {
 			String usrInput = input.nextLine();
-			for (int i = 0; i < usrInput.length(); ++i) {
-				if (!Character.isDigit(usrInput.charAt(i))) {
-					throw new AmazonProductException("Invalid Input");
-				}
-			}
+			
 			int pos = Integer.parseInt(usrInput);
 			productList.delete(pos);
 		} catch (AmazonProductException m) {
 			throw m;
+		} catch (NumberFormatException e) {
+			throw new AmazonProductException("Invalid input");
 		}
 		
 	}
 	
 	//TODO
-	public void saveProductList() throws AmazonProductException {}
-	
-	public void search() throws AmazonProductException {
-		System.out.print("What to search: ");
-		String p = input.nextLine();
-		productList.search(p);
+	public void saveProductList() throws AmazonProductException {
+		System.out.print("Enter filename to save: ");
+		String usrInput = input.nextLine();
+		productList.saveList(usrInput);
+		
+		System.out.println("File Written Successfully!");
 	}
 	
+	public void search() throws AmazonProductException {
+		System.out.print("Enter term to search: ");
+		String usrInput = input.nextLine();
+		productList.search(usrInput);
+	}
+	
+	public void exit() {
+		System.out.println("================================");
+		System.out.println("||     [Application ended]    ||");
+		System.out.println("================================");
+		
+		input.close();
+		System.exit(0);
+	}
 	
 	public void manageProductList() {
-		//Scanner input = new Scanner(System.in);
 		
-		int option = -1;
+		
 		String usrInput;
-		while (option != 0) {
+	
+		while (true) {
 			showMenu();
-			
+			int option = 0;
 			System.out.print("Choose an option: ");
 			try {
 				usrInput = input.nextLine();
 				
 				if (usrInput.isEmpty()) {
-					throw new AmazonProductException("Invalid Input");
+					throw new AmazonProductException("Invalid entry: enter an integer between 1 and 8");
 				}
 				try {
 					option = Integer.parseInt(usrInput);
 				} catch (NumberFormatException e) {
-					throw new AmazonProductException("Invalid Input");
+					throw new AmazonProductException("Invalid entry: enter an integer between 1 and 8");
 				}
 				//throw exception if none of case match
 				//ie the input is a valid number but is outside acceptable
 				//range
 				switch (option) {
-				case 0:
-					exit();
-					break;
 				case 1:
 					createProductList();
 					break;
@@ -198,11 +203,15 @@ public class AmazonProductManager {
 				case 7:
 					search();
 					break;
+				case 8:
+					exit();
+					break;	
 				default:
-					throw new AmazonProductException("Invalid Input");
+					throw new AmazonProductException("Invalid entry: enter an integer between 1 and 8");
 				}
 			} catch (AmazonProductException m) {
-				//Empty Block
+				//Empty
+				System.err.println("AmazonProductException: " + m.getMessage());
 			} 
 		}
 		
@@ -213,14 +222,14 @@ public class AmazonProductManager {
 	public void showMenu() {
 		
 		String[] menu = {
-				"0. Exit",
 				"1. Load product list",
 				"2. Show product list",
 				"3. Add product",
 				"4. Edit a product",
 				"5. Delete a product",
 				"6. Save product list",
-				"7. Search in the list"
+				"7. Search in the list",
+				"8. Exit"
 		};
 		
 		System.out.println("================================");
@@ -233,14 +242,10 @@ public class AmazonProductManager {
 		}
 	}
 	
+	//Entry point
 	public static void main(String[] args) {
 		AmazonProductManager manager = new AmazonProductManager();
 		manager.manageProductList();
 		
-		System.out.println("================================");
-		System.out.println("||     [Application ended]    ||");
-		System.out.println("================================");
-		
-		input.close();
 	}
 }

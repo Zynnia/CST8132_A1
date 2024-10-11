@@ -50,8 +50,12 @@ public class AmazonProduct {
 		link = items[5];
 		rating = Float.parseFloat(items[6].replace(",", ""));
 		nRatings = Integer.parseInt(items[7].replace(",", ""));
-		discountPrice = AmazonProductUtil.convertToFloat(items[8]);
-	    actualPrice = AmazonProductUtil.convertToFloat(items[9]);
+		//the following below are used for lab 3
+		discountPrice = Float.parseFloat(items[8].replace(",", ""));
+	    actualPrice = Float.parseFloat(items[9].replace(",", ""));
+		//Below is commented out for lab 3 only
+		//discountPrice = AmazonProductUtil.convertToFloat(items[8]);
+	    //actualPrice = AmazonProductUtil.convertToFloat(items[9]);
 			
 	}
 	
@@ -142,19 +146,19 @@ public class AmazonProduct {
 	public void setUrlImage(String imageURL) {
 		this.imageURL = imageURL;
 	}
-	//Place holder for now
+	
 	public String toString() {
 		
-		String str = "["
-				+ id + ", " 
+		String str = id + ", " 
 				+ name + ", " 
 				+ category.getCategoryName() + ", "
 				+ subCategory.getSubCategory() + ", "
 				+ imageURL + ", "
+				+ link + ", "
 				+ rating + ", " 
 				+ nRatings + ", " 
 				+ discountPrice + ", "
-				+ actualPrice + "]"; 
+				+ actualPrice; 
 	
 		return str;
 	}

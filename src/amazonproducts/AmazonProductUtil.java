@@ -11,6 +11,7 @@ public class AmazonProductUtil {
 	 */
 	public static float convertToFloat(String str) {
 		String num = "";
+		//Skip the currency sign at the front of the string
 		if (!Character.isDigit(str.charAt(0))) {
 			num = str.substring(1);
 		} else {
@@ -18,6 +19,54 @@ public class AmazonProductUtil {
 		}
 		
 		return Float.parseFloat(num.replace(",", ""));
+	}
+	
+	/**HELPER METHOD
+	 * This method verifies if the input string is a valid integer.
+	 * @param str String representing a integer
+	 * @return true if it is a valid in else false
+	 */
+	public static boolean isValidInt(String str) {
+		str = str.replace(",", "");
+		
+		//if string is empty return false
+		if (str.isEmpty() || str == null) return false;
+		for (int i = 0; i < str.length(); ++i) {
+			if (!Character.isDigit(str.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**HELPER METHOD
+	 * This method verify if a string is a valid float
+	 * @param str String representing a number
+	 * @return true if a valid float else false
+	 */
+	public static boolean isValidFloat(String str) {
+		str = str.replace(",","");
+		
+		//if string is empty return false
+		if (str.isEmpty() || str == null) return false;
+		
+		//decimal counter. Count the number of decimal in the string
+		int decimal = 0;
+		
+		for (int i = 0; i < str.length(); ++i) {
+			if (i == 0 && str.charAt(i) != '.' && !Character.isDigit(str.charAt(0))) {
+		        continue;
+		    }
+			if (str.charAt(i) == '.') {
+				decimal++;
+			} else if (!Character.isDigit(str.charAt(i))) {
+				return false;
+			}
+		}
+		//Cannot be a valid the string contains more than 1 decimal
+		if (decimal > 1) return false;
+		
+		return true;
 	}
 	
 	/**
@@ -36,6 +85,7 @@ public class AmazonProductUtil {
 	        int start = 0;
 	        int end = 0;
 	        
+	        
 	        while (start < line.length()) {
 	        	/*
 	        	 * If the first entry is a quote then
@@ -43,29 +93,29 @@ public class AmazonProductUtil {
 	        	 */
 	            if (line.charAt(start) == '"') {
 	                start++;
-	              
+	                
+	                //Counter used to check for balanced quotes 
+	                //Push pop method
+	                int counter = 1;
 	                for (end = start; end < line.length(); ++end) {
 	                    if (line.charAt(end) == '"') {
-	                        break;
+	                        if (counter == 1) counter = 0;
+	                        else counter = 1;
+	                    }
+	                    if (line.charAt(end) == ',' && counter == 0) {
+	                    	break;
 	                    }
 	                }
 	                /*
 	                 * Remove the trailing whitespaces
 	                 * and add it to the sol array
 	                 */
-	                String value = (line.substring(start,end)).trim();
+	                String value = (line.substring(start,end - 1)).trim();
 	                sol[idx] = value;
 	                idx++;
 	                start = end + 1;
-	            }
-	            /*
-	             * Check if see if index i is still valid if not return the
-	             * arraylist 
-	             */
 	           
-	            if (start >= line.length()) return sol;
-	       
-	            if (line.charAt(start) == ',' || line.charAt(start) == ' ') {
+	            } else if (line.charAt(start) == ',' || line.charAt(start) == ' ') {
 	                start++;
 	            } else  {
 	            	/*
@@ -84,6 +134,7 @@ public class AmazonProductUtil {
 	                idx++;
 	                start = end + 1;
 	            }
+	          
 	        }
 	        return sol;
 	}
