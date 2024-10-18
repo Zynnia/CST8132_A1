@@ -32,6 +32,11 @@ public class AmazonProductManager {
 		productList.printList();
 	}
 	
+	/**
+	 *  Method to add products manually
+	 *  ask user a series of prompt
+	 * @throws AmazonProductException
+	 */
 	public void addProduct() throws AmazonProductException {
 		
 		String[] prompts = {
@@ -66,12 +71,16 @@ public class AmazonProductManager {
 				throw new AmazonProductException("Invalid Data!");
 			}
 			try {
+				boolean valid = false;
 				//verify if the numerical inputs are valid
 				if (i == 0 || i == 7) {
-					Integer.parseInt(usrInput[i]);
+					valid = Integer.parseInt(usrInput[i]) < 0;
 				}
 				if (i == 6 || i == 8 || i == 9) {
-					Float.parseFloat(usrInput[i]);
+					valid = Float.parseFloat(usrInput[i]) < 0;
+				}
+				if (valid) {
+					throw new AmazonProductException("Invalid Data!");
 				}
 			} catch (NumberFormatException e) {
 				throw new AmazonProductException("Invalid Data!");
@@ -117,6 +126,11 @@ public class AmazonProductManager {
 		
 	}
 	
+	/**
+	 * Prompts user for index position to delete
+	 * 
+	 * @throws AmazonProductException Invalid input
+	 */
 	public void deleteProduct() throws AmazonProductException {
 		
 		System.out.print("Enter a position to delete: ");
@@ -131,10 +145,14 @@ public class AmazonProductManager {
 		} catch (NumberFormatException e) {
 			throw new AmazonProductException("Invalid input");
 		}
+		System.out.println("Deletion Successful");
 		
 	}
 	
-	//TODO
+	/**
+	 * Write the bestseller entries to an csv file
+	 * @throws AmazonProductException
+	 */
 	public void saveProductList() throws AmazonProductException {
 		System.out.print("Enter filename to save: ");
 		String usrInput = input.nextLine();
@@ -143,6 +161,10 @@ public class AmazonProductManager {
 		System.out.println("File Written Successfully!");
 	}
 	
+	/**
+	 * Prompt user for term to search
+	 * @throws AmazonProductException
+	 */
 	public void search() throws AmazonProductException {
 		System.out.print("Enter term to search: ");
 		String usrInput = input.nextLine();
@@ -210,7 +232,6 @@ public class AmazonProductManager {
 					throw new AmazonProductException("Invalid entry: enter an integer between 1 and 8");
 				}
 			} catch (AmazonProductException m) {
-				//Empty
 				System.err.println("AmazonProductException: " + m.getMessage());
 			} 
 		}
@@ -245,7 +266,6 @@ public class AmazonProductManager {
 	//Entry point
 	public static void main(String[] args) {
 		AmazonProductManager manager = new AmazonProductManager();
-		manager.manageProductList();
-		
+		manager.manageProductList();	
 	}
 }

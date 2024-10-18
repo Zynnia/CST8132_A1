@@ -30,7 +30,7 @@ public class AmazonProductUtil {
 		str = str.replace(",", "");
 		
 		//if string is empty return false
-		if (str.isEmpty() || str == null) return false;
+		if (str.isEmpty() || str == null || str.isBlank()) return false;
 		for (int i = 0; i < str.length(); ++i) {
 			if (!Character.isDigit(str.charAt(i))) {
 				return false;
@@ -84,7 +84,6 @@ public class AmazonProductUtil {
 	        int idx = 0;  //Index of the solution array
 	        int start = 0;
 	        int end = 0;
-	        
 	        
 	        while (start < line.length()) {
 	        	/*

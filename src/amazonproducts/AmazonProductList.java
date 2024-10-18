@@ -13,9 +13,23 @@ import java.util.ArrayList;
 public class AmazonProductList {
 	
 	private final int NUMCOLS = 10;
-	private String[] title;
+	private String[] title = {
+			"id",
+			"name",
+			"main_category",
+			"sub_category",
+			"image",
+			"link",
+			"ratings",
+			"no_of_ratings",
+			"discount_price",
+			"actual_price"
+			};
 	private ArrayList<AmazonProduct> bestsellers = new ArrayList<AmazonProduct>();
 	
+	/**
+	 * Constructor for AmazonProductList
+	 */
 	public AmazonProductList(){}
 	
 	public void add(AmazonProduct obj) {
@@ -35,7 +49,7 @@ public class AmazonProductList {
 			 */
 			
 			
-			/* This code is used to fix microsoft issues
+			/* This code is used to fix microsoft vscode issues utf-8 issues
 			 */ 
 			FileInputStream fr = new FileInputStream(csvFile);
 			InputStreamReader isr = new InputStreamReader(fr, StandardCharsets.UTF_8);
@@ -50,10 +64,8 @@ public class AmazonProductList {
 			//First line contains the header of the csv file. (Assume it always exists)
 			line = br.readLine();
 			
-			if (line != null && title == null)
-				title = AmazonProductUtil.lineReader(line);
-			
-			line = br.readLine(); //skip the first line for testing purposes
+			//skip the first line by assumption above
+			line = br.readLine(); 
 			
 			while (line != null) {
 				
@@ -61,9 +73,7 @@ public class AmazonProductList {
 				
 				boolean isValid = true;
 				
-				
 				//Check first if the entries are not empty
-				 
 				for (String entry: lineInfo) {
 					
 					if (entry == null || entry.isEmpty() || entry.isBlank()) {
@@ -95,6 +105,7 @@ public class AmazonProductList {
 	}
 	
 	public void delete(int val) throws AmazonProductException {
+		
 		int n = getSize();
 		
 		//Check if the bestsellers 
@@ -108,6 +119,7 @@ public class AmazonProductList {
 		}
 		
 		bestsellers.remove(val);
+		
 	}
 	
 	public void edit(int idx, AmazonProduct prod) throws AmazonProductException {
@@ -139,13 +151,18 @@ public class AmazonProductList {
 		 */
 		for (int i = 0; i < NUMCOLS; ++i) {
 			try {
+				boolean valid = false;
+				
 				if (!usrInput[i].isEmpty()) {
 					if (i == 0 || i == 7) {
-						Integer.parseInt(usrInput[i]);
+						valid  = Integer.parseInt(usrInput[i]) < 0;
 					}
 					if (i == 6 || i == 8 || i == 9) {
-						Float.parseFloat(usrInput[i]);
+						valid = Float.parseFloat(usrInput[i]) < 0;
 					}
+				}
+				if (valid) {
+					throw new AmazonProductException("Invalid Data");
 				}
 			} catch (NumberFormatException e) {
 				throw new AmazonProductException("Invalid Data!");
@@ -191,7 +208,13 @@ public class AmazonProductList {
 			}
 		}
 	}
-		
+	
+	/**
+	 * 
+	 * @param idx : position in the bestsellers list
+	 * @return AmazonProduct at that index
+	 * @throws AmazonProductException
+	 */
 	public AmazonProduct findProductByIndex(int idx) throws AmazonProductException {
 		int n = getSize();
 		
@@ -205,10 +228,17 @@ public class AmazonProductList {
 		return bestsellers.get(idx);
 	}
 	
+	/**
+	 * 
+	 * @return size of arraylist
+	 */
 	public int getSize() {
 		return bestsellers.size();
 	}
 	
+	/**
+	 * Prints all entries in the bestsellers list
+	 */
 	public void printList() {
 		System.out.println("PRODUCTLIST .................");
 		System.out.println("BOOKLIST .................");
@@ -239,22 +269,22 @@ public class AmazonProductList {
 			BufferedWriter br = new BufferedWriter(fr);
 			
 			//Write the title to the csv file
-			if (title != null) {
-				String header = "";
-				for (int i = 0; i < NUMCOLS; ++i) {
-					if (i != NUMCOLS - 1) {
-						header += title[i] + ",";
-					} else {
-						header += title[i];
-					}
-				
-				}	
-				br.write(header);
-				br.newLine();
-			}
+			String header = "";
+			for (int i = 0; i < NUMCOLS; ++i) {
+				if (i != NUMCOLS - 1) {
+					header += title[i] + ",";
+				} else {
+					header += title[i];
+				}
+			}	
+			br.write(header);
+			br.newLine();
+			
 			//write content of the bestsellers arraylist to the csv files
 			for (AmazonProduct obj : bestsellers) {
+				
 				String name =  "\"" + obj.getName() + "\"";
+				
 				String strToWrite = obj.getId() + "," 
 						+ name + "," 
 						+ "\"" + obj.getMain_category().getCategoryName() + "\""+ ","
@@ -265,6 +295,7 @@ public class AmazonProductList {
 						+ obj.getNo_of_rating() + "," 
 						+ obj.getDiscount_price() + ","
 						+ obj.getActual_price();
+				
 				br.write(strToWrite);
 				br.newLine();
 			}
@@ -276,6 +307,10 @@ public class AmazonProductList {
 	}
 	
 	public void search(String str) throws AmazonProductException {
+		
+		if (getSize() == 0) {
+			throw new AmazonProductException("Nothing to search. List is empty");
+		}
 		
 		if (str.isEmpty() || str.isBlank() || str == null) {
 			throw new AmazonProductException("Search Term Cannot Be Empty!");
@@ -292,8 +327,6 @@ public class AmazonProductList {
 				System.out.println("[" + obj.toString() + "]");
 				found = true;
 			}
-			
-			
 		}
 		if (!found) {
 			System.out.println("No match!");
