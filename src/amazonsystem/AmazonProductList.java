@@ -1,4 +1,4 @@
-package amazonproducts;
+package amazonsystem;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -36,7 +36,7 @@ public class AmazonProductList {
 		bestsellers.add(obj);
 	}
 	
-	public void createList(String csvFile) throws AmazonProductException  {
+	public void createList(String csvFile) throws AmazonException  {
 		//FileReader fr;
 		try {
 			
@@ -98,31 +98,31 @@ public class AmazonProductList {
 			}
 			br.close();
 		} catch (FileNotFoundException e) {
-			throw new AmazonProductException("Invalid file");
+			throw new AmazonException("Invalid file");
 		} catch (IOException e) {
-			throw new AmazonProductException("Invalid file");
+			throw new AmazonException("Invalid file");
 		}
 	}
 	
-	public void delete(int val) throws AmazonProductException {
+	public void delete(int val) throws AmazonException {
 		
 		int n = getSize();
 		
 		//Check if the bestsellers 
 		if (n == 0) {
-			throw new AmazonProductException("List is Empty");
+			throw new AmazonException("List is Empty");
 		}
 		
 		//validate if idx is within the size of the bestsellers list
 		if (val >= n || val < 0) {
-			throw new AmazonProductException("Input value between 0 and " + (n - 1));
+			throw new AmazonException("Input value between 0 and " + (n - 1));
 		}
 		
 		bestsellers.remove(val);
 		
 	}
 	
-	public void edit(int idx, AmazonProduct prod) throws AmazonProductException {
+	public void edit(int idx, AmazonProduct prod) throws AmazonException {
 		
 		String[] prompts = {
 				"Enter product id: ",
@@ -162,10 +162,10 @@ public class AmazonProductList {
 					}
 				}
 				if (valid) {
-					throw new AmazonProductException("Invalid Data");
+					throw new AmazonException("Invalid Data");
 				}
 			} catch (NumberFormatException e) {
-				throw new AmazonProductException("Invalid Data!");
+				throw new AmazonException("Invalid Data!");
 			}
 		}
 		
@@ -213,17 +213,17 @@ public class AmazonProductList {
 	 * 
 	 * @param idx : position in the bestsellers list
 	 * @return AmazonProduct at that index
-	 * @throws AmazonProductException
+	 * @throws AmazonException
 	 */
-	public AmazonProduct findProductByIndex(int idx) throws AmazonProductException {
+	public AmazonProduct findProductByIndex(int idx) throws AmazonException {
 		int n = getSize();
 		
 		if (n == 0) {
-			throw new AmazonProductException("List is Empty");
+			throw new AmazonException("List is Empty");
 		}
 		
 		if (idx >= n || idx < 0) {
-			throw new AmazonProductException("Input value between 0 and " + (n - 1));
+			throw new AmazonException("Input value between 0 and " + (n - 1));
 		}
 		return bestsellers.get(idx);
 	}
@@ -261,17 +261,17 @@ public class AmazonProductList {
 	 *  This method writes the information stored in bestsellers
 	 *  to a csv file.
 	 * @param str : the name of the file to write to.
-	 * @throws AmazonProductException : Throws exception if the filename is empty, list is empty, or failure to write
+	 * @throws AmazonException : Throws exception if the filename is empty, list is empty, or failure to write
 	 */
-	public void saveList(String str) throws AmazonProductException {
+	public void saveList(String str) throws AmazonException {
 		//check validity of the filename str
 		if (str.isEmpty() || str == null || str.isBlank()) {
-			throw new AmazonProductException("Filename is Empty!");
+			throw new AmazonException("Filename is Empty!");
 		}
 		
 		//Make sure the bestseller list is not empty
 		if (getSize() == 0) {
-			throw new AmazonProductException("List is Empty. Nothing to write");
+			throw new AmazonException("List is Empty. Nothing to write");
 		}
 		try {
 			FileWriter fr = new FileWriter(str);
@@ -310,19 +310,19 @@ public class AmazonProductList {
 			}
 			br.close();
 		} catch (IOException e) {
-			throw new AmazonProductException("Fail to perform Write operation!");
+			throw new AmazonException("Fail to perform Write operation!");
 		}
 		
 	}
 	
-	public void search(String str) throws AmazonProductException {
+	public void search(String str) throws AmazonException {
 		
 		if (getSize() == 0) {
-			throw new AmazonProductException("Nothing to search. List is empty");
+			throw new AmazonException("Nothing to search. List is empty");
 		}
 		
 		if (str.isEmpty() || str.isBlank() || str == null) {
-			throw new AmazonProductException("Search Term Cannot Be Empty!");
+			throw new AmazonException("Search Term Cannot Be Empty!");
 		}
 		
 		boolean found = false;

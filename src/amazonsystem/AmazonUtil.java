@@ -1,4 +1,4 @@
-package amazonproducts;
+package amazonsystem;
 
 public class AmazonUtil {
 	

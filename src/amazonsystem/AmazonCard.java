@@ -1,4 +1,4 @@
-package amazonproducts;
+package amazonsystem;
 
 public class AmazonCard extends AmazonCredit {
 	private String number;
@@ -15,6 +15,10 @@ public class AmazonCard extends AmazonCredit {
 	
 	public static AmazonCard createCredit(String[] data) {
 		if (!AmazonUtil.isStringEmpty(data)) {
+			
+			//verify if the float value is valid
+			if (!AmazonUtil.isValidFloat(data[2])) return null;
+			
 			float amount = Float.parseFloat(data[2]);
 			
 			if (amount >= 0) return new AmazonCard(data[0], data[1], amount);
@@ -38,5 +42,11 @@ public class AmazonCard extends AmazonCredit {
 
 	public void setExpiration(String expiration) {
 		this.expiration = expiration;
+	}
+	
+	@Override
+	public String toString() {
+		String line = "Type: " + super.getType() + ", Credit Number: " + number +", Expiration: " + expiration + ", value: " + super.getAmount();
+		return line;
 	}
 }

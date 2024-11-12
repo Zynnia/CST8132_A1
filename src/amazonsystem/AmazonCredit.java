@@ -1,4 +1,4 @@
-package amazonproducts;
+package amazonsystem;
 
 public abstract class AmazonCredit {
 	public enum PaymentType{Cash, Check, Card};

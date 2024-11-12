@@ -1,4 +1,4 @@
-package amazonproducts;
+package amazonsystem;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +45,10 @@ public class AmazonCart implements AmazonPayable{
 	}
 	
 	public void removeItem(AmazonProduct e) {
+		if (items.size() == 0) {
+			System.out.println("Cannot Remove AmazonProduct. Cart is empty!");
+			return;
+		}
 		int i = 0;
 		for (AmazonCartItem item : items) {
 			if (item.getProduct().getId() == e.getId()) {

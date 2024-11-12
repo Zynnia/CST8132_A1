@@ -1,4 +1,4 @@
-package amazonproducts;
+package amazonsystem;
 
 import java.util.ArrayList;
 
@@ -24,13 +24,8 @@ public class AmazonCustomer {
 		
 		if (!AmazonUtil.isStringEmpty(data)) {
 			int customerID = Integer.parseInt(data[0]);
-			/**
-			 * Verify if the customerID has been used before
-			 */
-			
 			AmazonCustomer customer =  new AmazonCustomer(customerID, data[1], data[2]);
 			return customer;
-		
 		}
 		
 		return null;

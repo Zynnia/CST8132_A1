@@ -1,4 +1,4 @@
-package amazonproducts;
+package amazonsystem;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -16,15 +16,17 @@ public class AmazonProductManager {
 	/**
 	 * Prompt user to enter a file to open.
 	 * Load the file into AmazonProductList
-	 * @throws AmazonProductException 
+	 * @throws AmazonException 
 	 */
-	public void createProductList() throws AmazonProductException {
+	public void createProductList() throws AmazonException {
 		
-		System.out.print("Name of file to create Productlist: ");
-		//String path  = input.nextLine();
+		System.out.print("Name of file to load products [empty = default file]: ");
+		String path  = input.nextLine();
 		//Testing purposes.
-		String path = "Sample-Amazon-Products-v2.csv";
+		String defaultPath = "Sample-Amazon-Products-v2.csv";
 		//path = "Amazon-Products.csv";
+		if (path.isEmpty() || path.isBlank()) path = defaultPath;
+		
 		productList.createList(path);
 		
 		System.out.println("Product List created successfully!");
@@ -40,9 +42,9 @@ public class AmazonProductManager {
 	/**
 	 *  Method to add products manually
 	 *  ask user a series of prompt
-	 * @throws AmazonProductException
+	 * @throws AmazonException
 	 */
-	public void addProduct() throws AmazonProductException {
+	public void addProduct() throws AmazonException {
 		
 		String[] prompts = {
 				"Enter product id: ",
@@ -73,7 +75,7 @@ public class AmazonProductManager {
 		for (int i = 0; i < prompts.length; ++i) {
 			//check if the input is empty
 			if (usrInput[i].isEmpty()) {
-				throw new AmazonProductException("Invalid Data!");
+				throw new AmazonException("Invalid Data!");
 			}
 			try {
 				boolean valid = false;
@@ -85,10 +87,10 @@ public class AmazonProductManager {
 					valid = Float.parseFloat(usrInput[i]) < 0;
 				}
 				if (valid) {
-					throw new AmazonProductException("Invalid Data!");
+					throw new AmazonException("Invalid Data!");
 				}
 			} catch (NumberFormatException e) {
-				throw new AmazonProductException("Invalid Data!");
+				throw new AmazonException("Invalid Data!");
 			}
 		}
 		
@@ -114,7 +116,7 @@ public class AmazonProductManager {
 	}
 	
 	
-	public void editProduct() throws AmazonProductException {
+	public void editProduct() throws AmazonException {
 		
 		System.out.print("Enter product index to edit: ");
 		String idx = input.nextLine();
@@ -123,10 +125,10 @@ public class AmazonProductManager {
 			val = Integer.parseInt(idx);
 			AmazonProduct product = productList.findProductByIndex(val);
 			productList.edit(val, product);
-		} catch (AmazonProductException m) {
+		} catch (AmazonException m) {
 			throw m;
 		} catch (NumberFormatException e) {
-			throw new AmazonProductException("Invalid index");
+			throw new AmazonException("Invalid index");
 		}
 		
 	}
@@ -134,9 +136,9 @@ public class AmazonProductManager {
 	/**
 	 * Prompts user for index position to delete
 	 * 
-	 * @throws AmazonProductException Invalid input
+	 * @throws AmazonException Invalid input
 	 */
-	public void deleteProduct() throws AmazonProductException {
+	public void deleteProduct() throws AmazonException {
 		
 		System.out.print("Enter a position to delete: ");
 		
@@ -145,10 +147,10 @@ public class AmazonProductManager {
 			
 			int pos = Integer.parseInt(usrInput);
 			productList.delete(pos);
-		} catch (AmazonProductException m) {
+		} catch (AmazonException m) {
 			throw m;
 		} catch (NumberFormatException e) {
-			throw new AmazonProductException("Invalid input");
+			throw new AmazonException("Invalid input");
 		}
 		System.out.println("Deletion Successful");
 		
@@ -156,9 +158,9 @@ public class AmazonProductManager {
 	
 	/**
 	 * Write the bestseller entries to an csv file
-	 * @throws AmazonProductException
+	 * @throws AmazonException
 	 */
-	public void saveProductList() throws AmazonProductException {
+	public void saveProductList() throws AmazonException {
 		System.out.print("Enter filename to save: ");
 		String usrInput = input.nextLine();
 		productList.saveList(usrInput);
@@ -168,9 +170,9 @@ public class AmazonProductManager {
 	
 	/**
 	 * Prompt user for term to search
-	 * @throws AmazonProductException
+	 * @throws AmazonException
 	 */
-	public void search() throws AmazonProductException {
+	public void search() throws AmazonException {
 		System.out.print("Enter term to search: ");
 		String usrInput = input.nextLine();
 		productList.search(usrInput);
@@ -198,7 +200,7 @@ public class AmazonProductManager {
 				usrInput = input.nextLine();
 				
 				if (usrInput.isEmpty() || usrInput.length() > 1) {
-					throw new AmazonProductException("Invalid entry: enter a character between A and Q");
+					throw new AmazonException("Invalid entry: enter a character between A and Q");
 				}
 				
 				option = usrInput.charAt(0);
@@ -258,9 +260,9 @@ public class AmazonProductManager {
 					exit();
 					break;	
 				default:
-					throw new AmazonProductException("Invalid entry: enter a char between A and Q");
+					throw new AmazonException("Invalid entry: enter a char between A and Q");
 				}
-			} catch (AmazonProductException m) {
+			} catch (AmazonException m) {
 				System.err.println("AmazonProductException: " + m.getMessage());
 			} 
 		}
@@ -358,9 +360,16 @@ public class AmazonProductManager {
 	/*
 	 * Add the error checking later	
 	 */
-		
+		if (customer.size() == 0) {
+			System.out.println("Cannot add credit to Customer. No Customers");
+			return;
+		} 
 		
 		String id = promptCustomerID();
+		
+		if (!AmazonUtil.isValidInt(id)) {
+			System.out.println("Invalid ID");
+		}
 		System.out.print("Enter the type of credit ([1]: Cash, [2]: Check, [3]: Card): ");
 		String type = input.nextLine();
 		System.out.print("Enter Cash value: ");
@@ -385,7 +394,7 @@ public class AmazonProductManager {
 			String expiration = "";
 			System.out.print("Enter card number: ");
 			number = input.nextLine();
-			System.out.print("Enter expiration date");
+			System.out.print("Enter expiration date: ");
 			expiration = input.nextLine();
 			
 			String[] data = new String[] {number, expiration, cashValue};
@@ -395,7 +404,7 @@ public class AmazonProductManager {
 		
 		int idx = findCustomerById(Integer.parseInt(id));
 		
-		if (idx >= 0) {
+		if (idx >= 0 && cred != null) {
 			customer.get(idx).addCredit(cred);
 			System.out.println("Result: Credit added with success!");
 		}
@@ -417,18 +426,31 @@ public class AmazonProductManager {
 		
 	}
 	
-	public void addProductInWishList() throws AmazonProductException {
+	public void addProductInWishList() throws AmazonException {
+		if (customer.size() == 0) {
+			System.out.println("Cannot add to Wish List. No Customers");
+			return;
+		} 
 		
+		if (productList.getSize() == 0) {
+			System.out.println("Cannot add to Wish List. Product List is empty");
+			return;
+		}
 		String id = promptCustomerID();
 		System.out.print("Enter the product ID to include in the Wishlist: ");
 		String productID = input.nextLine();
 		AmazonProduct product = productList.findProductByID(Integer.parseInt(productID));
+		
 		//Error for non valid idx
 		int idx = findCustomerById(Integer.parseInt(id));
 		customer.get(idx).addProductInWishList(product);
 	}
 	
 	public void removeProductFromWishList() {
+		
+		/**
+		 * if customer exist then check if the list is empty;
+		 */
 		
 		String id = promptCustomerID();
 		System.out.print("Enter the Product ID to remove in the Wishlist: ");
@@ -461,8 +483,16 @@ public class AmazonProductManager {
 	/*
 	 * SKIP THE CART STUFF FOR NOW
 	 */
-	public void addProductInCart() throws AmazonProductException {
+	public void addProductInCart() throws AmazonException {
+		if (customer.size() == 0) {
+			System.out.println("Cannot add to Cart. No Customers");
+			return;
+		} 
 		
+		if (productList.getSize() == 0) {
+			System.out.println("Cannot add to Cart. Product List is empty");
+			return;
+		}
 		String id = promptCustomerID();
 		System.out.print("Enter the Product ID to buy from you cart: ");
 		String productID = input.nextLine();
@@ -482,8 +512,11 @@ public class AmazonProductManager {
 	}
 	
 	public void removeProductFromCart() {
+		/*
+		 * Check if cart is empty or not
+		 */
 		String id = promptCustomerID();
-		System.out.print("Enter the product ID");
+		System.out.print("Enter the product ID: ");
 		String productID = input.nextLine();
 		int idx = findCustomerById(Integer.parseInt(id));
 		if (idx >= 0) {
@@ -491,6 +524,8 @@ public class AmazonProductManager {
 			if (prod != null) {
 				customer.get(idx).removeProductFromCart(prod);
 			}
+		} else {
+			System.out.println("Cannot find customer");
 		}
 	}
 	
@@ -511,14 +546,28 @@ public class AmazonProductManager {
 
 		AmazonCustomer cust = customer.get(idx);
 		//Grab the payment size
-		int n = cust.getSize() - 1;
-		System.out.printf("Select the payment method [from 0 to %d]: ", n);
+		int n = cust.getSize();
+		
+		if (n == 0) {
+			System.out.println("No Payment methods available");
+			return;
+		}
+		System.out.printf("Select the payment method [from 0 to %d]: ", (n - 1));
 		String choice = input.nextLine();
+		
+		if (!AmazonUtil.isValidInt(choice)) {
+			System.out.println("Invalid Input");
+			return;
+		}
 		/*
 		 * FIX THIS: HANDLING USER INPUT AND ERROR CHECKING FOR INVALID INPUT
 		 */
-		cust.pay(cust.payment(Integer.parseInt(choice)));	
-	}
+		if (Integer.parseInt(choice) >= 0 && Integer.parseInt(choice) <= n) {
+			cust.pay(cust.payment(Integer.parseInt(choice)));	
+		} else {
+			System.out.println("Invalid Payment Choice");
+		}
+	}	
 	
 	
 	/**
@@ -597,6 +646,8 @@ public class AmazonProductManager {
 		
 		return usrInput;
 	}
+	
+
 	//Entry point
 	public static void main(String[] args) {
 		AmazonProductManager manager = new AmazonProductManager();
