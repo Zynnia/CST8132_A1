@@ -10,6 +10,8 @@ public class AmazonCart implements AmazonPayable{
 	private ArrayList<AmazonCartItem> items = new ArrayList<AmazonCartItem>();
 	private float totalValue;
 	
+	public AmazonCart() {}
+	
 	public AmazonCart(AmazonCustomer customer, Date date) {
 		this.setCustomer(customer);
 		this.setDate(date);

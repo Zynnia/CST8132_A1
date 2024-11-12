@@ -4,14 +4,14 @@ import java.util.Date;
 import java.util.Scanner;
 
 
-public class AmazonProductManager {
+public class AmazonManager {
 	
 	public static Scanner input = new Scanner(System.in);
 	private AmazonProductList productList = new AmazonProductList();
 	private ArrayList<AmazonCustomer> customer = new ArrayList<AmazonCustomer>();
 	
 	
-	public AmazonProductManager() {}
+	public AmazonManager() {}
 	
 	/**
 	 * Prompt user to enter a file to open.
@@ -263,7 +263,7 @@ public class AmazonProductManager {
 					throw new AmazonException("Invalid entry: enter a char between A and Q");
 				}
 			} catch (AmazonException m) {
-				System.err.println("AmazonProductException: " + m.getMessage());
+				System.err.println("AmazonException: " + m.getMessage());
 			} 
 		}
 		
@@ -315,7 +315,7 @@ public class AmazonProductManager {
 	 * 
 	 * 
 	 */
-	public void addCustomer() {
+	public void addCustomer() throws AmazonException {
 		
 		String id = promptCustomerID();
 		System.out.print("Enter the Customer name: ");
@@ -324,19 +324,13 @@ public class AmazonProductManager {
 		String address = input.nextLine();
 		
 		if (!AmazonUtil.isValidInt(id)) {
-			System.out.println("Error No ID given");
-			return;
-		}
-		
-		if (Integer.parseInt(id) < 0) {
-			System.out.println("Error Customer ID must be positive!");
-			return;
+			throw new AmazonException("The Customer ID is invalid!");
 		}
 		
 		int idx = findCustomerById(Integer.parseInt(id));
 		
 		if (idx >= 0) {
-			System.out.println("Customer ID already exist!");
+			throw new AmazonException("Customer ID already exist!");
 		} else {
 			String[] data = new String[] {id, name, address};
 			AmazonCustomer cust = AmazonCustomer.createAmazonCustomer(data);
@@ -344,7 +338,7 @@ public class AmazonProductManager {
 				customer.add(cust);
 				cust.setCart(new AmazonCart(cust, new Date()));
 			} else {
-				System.out.println("Error Failed to create Customer!");
+				throw new AmazonException("Failed to create Customer!");
 			}
 		}
 	}
@@ -356,19 +350,18 @@ public class AmazonProductManager {
 	}
 	
 	
-	public void addCreditToCustomer() {
+	public void addCreditToCustomer() throws AmazonException {
 	/*
 	 * Add the error checking later	
 	 */
 		if (customer.size() == 0) {
-			System.out.println("Cannot add credit to Customer. No Customers");
-			return;
+			throw new AmazonException("Cannot add credit to Customer. No Customers");
 		} 
 		
 		String id = promptCustomerID();
 		
 		if (!AmazonUtil.isValidInt(id)) {
-			System.out.println("Invalid ID");
+			throw new AmazonException("The Customer ID is invalid!");
 		}
 		System.out.print("Enter the type of credit ([1]: Cash, [2]: Check, [3]: Card): ");
 		String type = input.nextLine();
@@ -401,29 +394,30 @@ public class AmazonProductManager {
 			cred = AmazonCard.createCredit(data);
 		}
 		
-		
 		int idx = findCustomerById(Integer.parseInt(id));
 		
 		if (idx >= 0 && cred != null) {
 			customer.get(idx).addCredit(cred);
 			System.out.println("Result: Credit added with success!");
 		}
-		else System.out.println("Result: Credit added with failure!");
+		else throw new AmazonException("Result: Failed to add Credit!");
 		
 	}
 	
-	public void showCreditFromCustomer() {
+	public void showCreditFromCustomer() throws AmazonException {
 		
 		String id  = promptCustomerID();
+		
+		if (!AmazonUtil.isValidInt(id)) throw new AmazonException("Invalid Customer ID");
+		
 		int idx = findCustomerById(Integer.parseInt(id));
 		
 		if (idx >= 0) {
 			customer.get(idx).showCredit();
 		} else {
-			System.out.println("Customer does not exist!");
+			throw new AmazonException("Customer does not exist!");
 		}
-		
-		
+			
 	}
 	
 	public void addProductInWishList() throws AmazonException {
@@ -650,7 +644,7 @@ public class AmazonProductManager {
 
 	//Entry point
 	public static void main(String[] args) {
-		AmazonProductManager manager = new AmazonProductManager();
+		AmazonManager manager = new AmazonManager();
 		manager.manageProductList();		
 				
 	}

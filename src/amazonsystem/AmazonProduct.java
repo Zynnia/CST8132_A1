@@ -158,4 +158,36 @@ public class AmazonProduct {
 	
 		return str;
 	}
+
+
+	public static AmazonProduct createAmazonProduct(String[] data) {
+		if (data.length < 10) {
+			return null;
+		}
+
+		boolean isValid = true;
+		
+		//Check first if the entries are not empty
+		for (String entry: data) {
+			
+			if (entry == null || entry.isEmpty() || entry.isBlank()) {
+				isValid = false;
+				break;
+			}
+		}
+		
+		if (isValid) {
+			// Verify if the numerical inputs are valid
+			if (AmazonUtil.isValidInt(data[0]) &&
+				AmazonUtil.isValidInt(data[7]) &&
+				AmazonUtil.isValidFloat(data[6]) &&
+				AmazonUtil.isValidFloat(data[8]) &&
+				AmazonUtil.isValidFloat(data[9])
+				) {
+				return new AmazonProduct(data);
+			}
+		}
+		return null;
+		
+	}
 }

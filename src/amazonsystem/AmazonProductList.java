@@ -141,7 +141,7 @@ public class AmazonProductList {
 		for (int i = 0; i < NUMCOLS; ++i) {
 			
 			System.out.print(prompts[i]);
-			usrInput[i] = AmazonProductManager.input.nextLine();
+			usrInput[i] = AmazonManager.input.nextLine();
 		}
 		
 		/*

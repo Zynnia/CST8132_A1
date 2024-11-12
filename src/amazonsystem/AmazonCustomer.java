@@ -10,7 +10,7 @@ public class AmazonCustomer {
 	private ArrayList<AmazonCredit> payments = new ArrayList<AmazonCredit>();
 	private ArrayList<AmazonProduct> wishList = new ArrayList<AmazonProduct>();
 	private ArrayList<AmazonComment> comments = new ArrayList<AmazonComment>();
-	private AmazonCart cart;
+	private AmazonCart cart = new AmazonCart();
 	
 	private float totalCredit;
 	
@@ -21,8 +21,12 @@ public class AmazonCustomer {
 	}
 	
 	public static AmazonCustomer createAmazonCustomer(String[] data) {
+		if (data.length != 3) return null;
+		
 		
 		if (!AmazonUtil.isStringEmpty(data)) {
+			if (!AmazonUtil.isValidInt(data[0])) return null;
+			
 			int customerID = Integer.parseInt(data[0]);
 			AmazonCustomer customer =  new AmazonCustomer(customerID, data[1], data[2]);
 			return customer;
@@ -37,6 +41,10 @@ public class AmazonCustomer {
 	}
 	
 	public void showCredit() {
+		
+		if (payments.size() == 0) {
+			System.out.println("Nothing to print! No payments on record.");
+		}
 		
 		for (int i  = 0; i < payments.size(); ++i) {
 			String form = "Credit[" + i + "]: ";
@@ -185,6 +193,18 @@ public class AmazonCustomer {
 	}
 	public AmazonComment getComments(int idx) {
 		return comments.get(idx);
+	}
+	public int getCartSize() {
+		return cart.getSize();
+	}
+	public int getWishlistSize() {
+		return wishList.size();
+	}
+	public int getNumberOfCredits() {
+		return payments.size();
+	}
+	public int getNumberOfComments() {
+		return comments.size();
 	}
 
 }

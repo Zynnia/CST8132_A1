@@ -37,4 +37,7 @@ public class AmazonComment {
 	public void setStars(float stars) {
 		this.stars = stars;
 	}
+	public void setRating(float stars) {
+		setStars(stars);
+	}
 }
