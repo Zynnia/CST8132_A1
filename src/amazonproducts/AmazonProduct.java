@@ -50,8 +50,8 @@ public class AmazonProduct {
 		link = items[5];
 		rating = Float.parseFloat(items[6].replace(",", ""));
 		nRatings = Integer.parseInt(items[7].replace(",", ""));
-		discountPrice = AmazonProductUtil.convertToFloat(items[8]);
-	    actualPrice = AmazonProductUtil.convertToFloat(items[9]);
+		discountPrice = AmazonUtil.convertToFloat(items[8]);
+	    actualPrice = AmazonUtil.convertToFloat(items[9]);
 			
 	}
 	

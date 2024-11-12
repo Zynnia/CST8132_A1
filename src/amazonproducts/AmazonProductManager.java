@@ -1,10 +1,15 @@
 package amazonproducts;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
+
 
 public class AmazonProductManager {
 	
 	public static Scanner input = new Scanner(System.in);
 	private AmazonProductList productList = new AmazonProductList();
+	private ArrayList<AmazonCustomer> customer = new ArrayList<AmazonCustomer>();
+	
 	
 	public AmazonProductManager() {}
 	
@@ -16,9 +21,9 @@ public class AmazonProductManager {
 	public void createProductList() throws AmazonProductException {
 		
 		System.out.print("Name of file to create Productlist: ");
-		String path  = input.nextLine();
+		//String path  = input.nextLine();
 		//Testing purposes.
-		//path = "Sample-Amazon-Products-v2.csv";
+		String path = "Sample-Amazon-Products-v2.csv";
 		//path = "Amazon-Products.csv";
 		productList.createList(path);
 		
@@ -184,52 +189,76 @@ public class AmazonProductManager {
 		
 		
 		String usrInput;
-	
+		showMenu();
 		while (true) {
-			showMenu();
-			int option = 0;
+			
+			char option = ' ';
 			System.out.print("Choose an option: ");
 			try {
 				usrInput = input.nextLine();
 				
-				if (usrInput.isEmpty()) {
-					throw new AmazonProductException("Invalid entry: enter an integer between 1 and 8");
+				if (usrInput.isEmpty() || usrInput.length() > 1) {
+					throw new AmazonProductException("Invalid entry: enter a character between A and Q");
 				}
-				try {
-					option = Integer.parseInt(usrInput);
-				} catch (NumberFormatException e) {
-					throw new AmazonProductException("Invalid entry: enter an integer between 1 and 8");
-				}
-				//throw exception if none of case match
-				//ie the input is a valid number but is outside acceptable
-				//range
+				
+				option = usrInput.charAt(0);
+				
+				
 				switch (option) {
-				case 1:
+				case 'A':
 					createProductList();
 					break;
-				case 2:
+				case 'B':
 					displayProductList();
 					break;
-				case 3:
-					addProduct();
-					break;
-				case 4:
-					editProduct();
-					break;
-				case 5:
-					deleteProduct();
-					break;
-				case 6:
-					saveProductList();
-					break;
-				case 7:
+				case 'C':
 					search();
 					break;
-				case 8:
+				case 'D':
+					addCustomer();
+					break;
+				case 'E':
+					showCustomers();
+					break;
+				case 'F':
+					addCreditToCustomer();
+					break;
+				case 'G':
+					showCreditFromCustomer();
+					break;
+				case 'H':
+					addProductInWishList();
+					break;
+				case 'I':
+					removeProductFromWishList();
+					break;
+				case 'J':
+					showWishList();
+					break;
+				case 'K':
+					addProductInCart();
+					break;
+				case 'L':
+					removeProductFromCart();
+					break;
+				case 'M':
+					showProductsInCart();
+					break;
+				case 'N':
+					payCart();
+					break;
+				
+				case 'O':
+					addCommentToProduct();
+					break;
+				case 'P':
+					showComments();
+					break;
+				case 'Q':
 					exit();
 					break;	
 				default:
-					throw new AmazonProductException("Invalid entry: enter an integer between 1 and 8");
+					throw new AmazonProductException("Invalid entry: enter a char between A and Q");
 				}
 			} catch (AmazonProductException m) {
 				System.err.println("AmazonProductException: " + m.getMessage());
@@ -243,29 +272,237 @@ public class AmazonProductManager {
 	public void showMenu() {
 		
 		String[] menu = {
-				"1. Load product list",
-				"2. Show product list",
-				"3. Add product",
-				"4. Edit a product",
-				"5. Delete a product",
-				"6. Save product list",
-				"7. Search in the list",
-				"8. Exit"
+		        "===========================================================================",
+				"||    ****    ****           ****    ****   *****      ALGONQUIN COLLEGE ||",
+				"||   **  **  **       **    **  **  **  **  **  **   COURSE: OOP/CST8152 ||",
+				"||   ******  **       **    **  **  **  **  *****            PROF: PAULO ||",
+				"||   **  **   ****           ****    ****   **         TERM: FALL / 2024 ||",
+				"===========================================================================",
+				"||                        [Menu A2 - Amazon Manager]                     ||",
+				"===========================================================================",
+				"||                                  || USER                              ||",
+				"||                                  || Credit options .................. ||",
+				"|| ADMIN                            || [F] Add credit to customer        ||",
+				"||                                  || [G] Show credits from customer    ||",
+				"|| Product options ................ || Wishlist options ................ ||",
+				"|| [A] Load product list            || [H] Add product in wishlist       ||",
+				"|| [B] Show product list            || [I] Remove product from wishlist  ||",
+				"|| [C] Search products              || [J] Show products from wishlist   ||",
+				"||                                  || Cart options .................... ||",
+				"|| Customer options ............... || [K] Add product in cart           ||",
+				"|| [D] Add customer                 || [L] Remove product from cart      ||",
+				"|| [E] Show customers               || [M] Show products from cart       ||",
+				"||                                  || [N] Buy products from cart        ||",
+				"||                                  || Comment options ................. ||",
+				"|| ................................ || [O] Comment products bought       ||",
+				"||            [Q] Exit              || [P] List comments from products   ||",
+				"==========================================================================="
 		};
-		
-		System.out.println("================================");
-		System.out.println("|| Menu - Amazon Products: A1 ||");
-		System.out.println("================================");
-		
 		//Print menu entries
 		for (String menuItem: menu) {
 			System.out.println(menuItem);
 		}
 	}
 	
+	/* A2 stuff here*/
+	public void addCustomer() {
+		String id = "";
+		String name = "";
+		String address = "";
+		System.out.print("Enter the Customer id: ");
+		id = input.nextLine();
+		System.out.print("Enter the Customer name: ");
+		name = input.nextLine();
+		System.out.print("Enter the Customer address: ");
+		address = input.nextLine();
+		String[] data = new String[] {id, name, address};
+		AmazonCustomer cust = AmazonCustomer.createAmazonCustomer(data);
+		if (cust != null) {
+			customer.add(cust);
+			cust.setCart(new AmazonCart(cust, new Date()));
+		}
+	}
+	
+	public void showCustomers() {
+		for (AmazonCustomer cust: customer) {
+			System.out.println(cust.toString());
+		}
+	}
+	
+	
+	public void addCreditToCustomer() {
+	/*
+	 * Add the error checking later	
+	 */
+		String id = "";
+		String type = "";
+		String cashValue = "";
+		System.out.print("Enter the Customer id: ");
+		id = input.nextLine();
+		System.out.print("Enter the type of credit ([1]: Cash, [2]: Check, [3]: Card): ");
+		type = input.nextLine();
+		System.out.print("Enter Cash value: ");
+		cashValue = input.nextLine();
+		AmazonCredit cred = null;
+		
+		if (type.equals("1")) {
+			String[] data = new String[] {cashValue};
+			cred = AmazonCash.createCash(data);
+		} 
+		
+		if (type.equals("2")) {
+			String accountNumber = "";
+			System.out.print("Enter the account number: ");
+			accountNumber = input.nextLine();
+			String[] data = new String[] {accountNumber, cashValue};
+			cred = AmazonCheck.createCheck(data);
+		}
+		
+		if (type.equals("3")) {
+			String number = "";
+			String expiration = "";
+			System.out.print("Enter card number: ");
+			number = input.nextLine();
+			System.out.print("Enter expiration date");
+			expiration = input.nextLine();
+			
+			String[] data = new String[] {number, expiration, cashValue};
+			cred = AmazonCard.createCredit(data);
+		}
+		
+		
+		int idx = findCustomerById(Integer.parseInt(id));
+		
+		if (idx >= 0) {
+			customer.get(idx).addCredit(cred);
+			System.out.println("Result: Credit added with success!");
+		}
+		else System.out.println("Result: Credit added with failure!");
+		
+	}
+	
+	public void showCreditFromCustomer() {
+		for (AmazonCustomer cust: customer) {
+			cust.showCredit();
+		}
+	}
+	
+	public void addProductInWishList() throws AmazonProductException {
+		System.out.println("Enter the Customer id: ");
+		String id = input.nextLine();
+		System.out.println("Enter the product ID to incllude in the Wishlist: ");
+		String productID = input.nextLine();
+		AmazonProduct product = productList.findProductByIndex(Integer.parseInt(productID));
+		
+		int idx = findCustomerById(Integer.parseInt(id));
+		customer.get(idx).addProductInWishList(product);
+	}
+	
+	public void removeProductFromWishList() {
+		System.out.print("Enter the Customer id: ");
+		String id = input.nextLine();
+		System.out.print("Enter the Product ID to remove in the Wishlist");
+		String productID = input.nextLine();
+		
+		int idx = findCustomerById(Integer.parseInt(id));
+		
+		if (idx != -1) {
+			customer.get(idx).removeProductFromWishList(Integer.parseInt(productID));
+		}
+		
+		
+	}
+	
+	public void showWishList() {
+		for (AmazonCustomer cust: customer) {
+			cust.showWishList();
+		}
+	}
+	/*
+	 * SKIP THE CART STUFF FOR NOW
+	 */
+	public void addProductInCart() throws AmazonProductException {
+		System.out.print("Enter the Customer id: ");
+		String id = input.nextLine();
+		System.out.println("Enter the Product ID to buy from you cart: ");
+		String productID = input.nextLine();
+		System.out.println("Enter the number of items to put in cart: ");
+		String quantity = input.nextLine();
+		
+		AmazonProduct prod = productList.findProductByIndex(Integer.parseInt(productID));
+		AmazonCartItem item = new AmazonCartItem(prod, Integer.parseInt(quantity));
+		
+		int idx = findCustomerById(Integer.parseInt(id));
+		customer.get(idx).addItemInCart(item);
+		
+		System.out.printf("Cart updated: [ %s of %s added for customer %s %n", quantity, productID, id);
+		
+	}
+	
+	public void removeProductFromCart() {}
+	
+	public void showProductsInCart() {
+		
+	}
+	
+	public void payCart() {
+		System.out.print("Enter the Customer id: ");
+		String id = input.nextLine();
+		int idx = findCustomerById(Integer.parseInt(id));
+		//payment size
+		AmazonCustomer cust = customer.get(idx);
+		int n = cust.getSize();
+		System.out.printf("Select the payment method [from 0 to %d] %n", n);
+		String choice = input.nextLine();
+		
+		cust.pay(cust.payment(Integer.parseInt(choice)));
+	
+		
+	}
+	
+	/*
+	 * 
+	 * ADD error checking later
+	 * Add find product by id
+	 */
+	public void addCommentToProduct() {
+		System.out.println("Enter the Customer id: ");
+		String id = input.nextLine();
+		System.out.println("Enter the product ID to comment: ");
+		String productId = input.nextLine();
+		;
+		System.out.println("Enter the comment: ");
+		String comment = input.nextLine();
+		
+		System.out.println("Enter the stars: ");
+		String stars = input.nextLine();
+		
+		AmazonComment comments = new AmazonComment(null);
+		comments.setComment(comment);
+		comments.setStars(Float.parseFloat(stars));
+	}
+	
+	public void showComments() {
+		System.out.println("Enter the Customer id: ");
+		String customerID = input.nextLine();
+		
+		int idx = findCustomerById(Integer.parseInt(customerID));
+		customer.get(idx).showComments();
+	}
+	
+	public int findCustomerById(int idx) {
+		for (int i = 0; i < customer.size(); ++i) {
+			if (customer.get(i).getID() == idx) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
 	//Entry point
 	public static void main(String[] args) {
 		AmazonProductManager manager = new AmazonProductManager();
-		manager.manageProductList();	
+		manager.manageProductList();		
+				
 	}
 }

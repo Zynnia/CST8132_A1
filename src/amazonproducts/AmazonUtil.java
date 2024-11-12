@@ -1,6 +1,6 @@
 package amazonproducts;
 
-public class AmazonProductUtil {
+public class AmazonUtil {
 	
 	
 	/**
@@ -67,6 +67,16 @@ public class AmazonProductUtil {
 		if (decimal > 1) return false;
 		
 		return true;
+	}
+	
+	//Check if data entry is blank
+	public static boolean isStringEmpty(String[] data) {
+		for (String e : data) {
+			if (e.isBlank() || e.isEmpty()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**

@@ -69,7 +69,7 @@ public class AmazonProductList {
 			
 			while (line != null) {
 				
-				String[] lineInfo = AmazonProductUtil.lineReader(line);
+				String[] lineInfo = AmazonUtil.lineReader(line);
 				
 				boolean isValid = true;
 				
@@ -84,11 +84,11 @@ public class AmazonProductList {
 				
 				if (isValid) {
 					// Verify if the numerical inputs are valid
-					if (AmazonProductUtil.isValidInt(lineInfo[0]) &&
-						AmazonProductUtil.isValidInt(lineInfo[7]) &&
-						AmazonProductUtil.isValidFloat(lineInfo[6]) &&
-						AmazonProductUtil.isValidFloat(lineInfo[8]) &&
-						AmazonProductUtil.isValidFloat(lineInfo[9])
+					if (AmazonUtil.isValidInt(lineInfo[0]) &&
+						AmazonUtil.isValidInt(lineInfo[7]) &&
+						AmazonUtil.isValidFloat(lineInfo[6]) &&
+						AmazonUtil.isValidFloat(lineInfo[8]) &&
+						AmazonUtil.isValidFloat(lineInfo[9])
 						) {
 						AmazonProduct item = new AmazonProduct(lineInfo);
 						bestsellers.add(item);
