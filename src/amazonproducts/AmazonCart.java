@@ -47,7 +47,7 @@ public class AmazonCart implements AmazonPayable{
 	public void removeItem(AmazonProduct e) {
 		int i = 0;
 		for (AmazonCartItem item : items) {
-			if (item.getProduct().toString().equals(e.toString())) {
+			if (item.getProduct().getId() == e.getId()) {
 				items.remove(i);
 				break;
 			}
@@ -57,7 +57,7 @@ public class AmazonCart implements AmazonPayable{
 	
 	
 	public void getCartDetails() {
-		System.out.printf("[Customer: ]%n", customer.getName());
+		System.out.printf("[Customer: %s]%n", customer.getName());
 		for (AmazonCartItem it : items) {
 			System.out.println(it.toString());
 		}
@@ -96,5 +96,8 @@ public class AmazonCart implements AmazonPayable{
 	
 	public void emptyList() {
 		items.clear();
+	}
+	public int getSize() {
+		return items.size();
 	}
 }

@@ -1,7 +1,6 @@
 package amazonproducts;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 
 public class AmazonCustomer {
@@ -53,17 +52,28 @@ public class AmazonCustomer {
 	public void addProductInWishList(AmazonProduct e) {
 		wishList.add(e);
 	}
-	
-	public void removeProductFromWishList(int idx) {
+	//FIXED THIS
+	public void removeProductFromWishList(int productID) {
 		if (wishList.isEmpty()) return;
 		
-		if (idx >= wishList.size() || idx < 0) return;
-		wishList.remove(idx - 1);
+		int valToRemove = -1;
+		
+		for (int i = 0; i < wishList.size(); ++i) {
+			if (wishList.get(i).getId() == productID) {
+				valToRemove = i;
+			}
+		}
+		if (valToRemove != -1) {
+			wishList.remove(valToRemove);
+		} else {
+			System.out.println("Product does not exist in the Wish List!");
+		}
+		
 	}
 	
 	public boolean isProductInWishList(AmazonProduct e) {
 		for (AmazonProduct amazon: wishList) {
-			if (amazon.toString().equals(e.toString())) {
+			if (amazon.getId() == e.getId()) {
 				return true;
 			}
 		}
@@ -74,7 +84,7 @@ public class AmazonCustomer {
 		
 		for (int i = 0; i < wishList.size(); ++i) {
 			String val = "Item[" + i + "]=";
-			System.out.println(val + wishList.get(i).toString());
+			System.out.println(val + "[" + wishList.get(i).toString() + "]");
 		}
 	}
 	
@@ -91,13 +101,17 @@ public class AmazonCustomer {
 	}
 	
 	public void pay(AmazonCredit p) {
-		
+		if (cart.getSize() == 0) {
+			System.out.println("Cart is empty!");
+			return;
+		}
 		if (cart.pay(p.getAmount())) {
-			moveFromCartToComments();
 			float diff = p.getAmount() - cart.calcSubTotal();
 			p.setAmount(diff);
 			System.out.println(p.update());
+			moveFromCartToComments();
 			System.out.println("Cart empty - you can comment products now");
+			
 		} else {
 			System.out.println("You broke.");
 		}
@@ -106,12 +120,26 @@ public class AmazonCustomer {
 	public void moveFromCartToComments() {
 		for (AmazonCartItem it : cart.getCart()) {
 			AmazonComment comm = new AmazonComment(it.getProduct());
-			comments.add(comm);
+			addComment(comm);
 		}
 		cart.emptyList();
 	}
 	
-	public boolean hasProductToComments() { return false;}
+	//Need to call this
+	public int productToCommentsID(String productID) { 
+		if (comments.size() == 0) {
+			return -1;
+		}
+		int val = Integer.parseInt(productID);
+		int i = 0;
+		for (AmazonComment c : comments) {
+			if (c.getProduct().getId() == val) {
+				return i;
+			}
+			i++;
+		}
+		return -1;
+	}
 	
 	public void addComment(AmazonComment comment) {
 		comments.add(comment);
@@ -155,10 +183,13 @@ public class AmazonCustomer {
 	}
 	
 	public int getSize() {
-		return payments.size() - 1;
+		return payments.size();
 	}
 	public AmazonCredit payment(int idx) {
 		return payments.get(idx);
 	}
-	
+	public AmazonComment getComments(int idx) {
+		return comments.get(idx);
+	}
+
 }

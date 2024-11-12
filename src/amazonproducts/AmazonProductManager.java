@@ -177,9 +177,9 @@ public class AmazonProductManager {
 	}
 	
 	public void exit() {
-		System.out.println("================================");
-		System.out.println("||     [Application ended]    ||");
-		System.out.println("================================");
+		System.out.println("===========================================================================");
+		System.out.println("||    [End of Application (Author: Brian Huynh Student number here]      ||");
+		System.out.println("===========================================================================");
 		
 		input.close();
 		System.exit(0);
@@ -274,7 +274,7 @@ public class AmazonProductManager {
 		String[] menu = {
 		        "===========================================================================",
 				"||    ****    ****           ****    ****   *****      ALGONQUIN COLLEGE ||",
-				"||   **  **  **       **    **  **  **  **  **  **   COURSE: OOP/CST8152 ||",
+				"||   **  **  **       **    **  **  **  **  **  **   COURSE: OOP/CST8132 ||",
 				"||   ******  **       **    **  **  **  **  *****            PROF: PAULO ||",
 				"||   **  **   ****           ****    ****   **         TERM: FALL / 2024 ||",
 				"===========================================================================",
@@ -304,22 +304,46 @@ public class AmazonProductManager {
 		}
 	}
 	
-	/* A2 stuff here*/
+	/**
+	 * 
+	 * 
+	 * 
+	 * ASSIGNMENT 2 STARTS HERE
+	 * 
+	 * 
+	 * 
+	 */
 	public void addCustomer() {
-		String id = "";
-		String name = "";
-		String address = "";
-		System.out.print("Enter the Customer id: ");
-		id = input.nextLine();
+		
+		String id = promptCustomerID();
 		System.out.print("Enter the Customer name: ");
-		name = input.nextLine();
+		String name = input.nextLine();
 		System.out.print("Enter the Customer address: ");
-		address = input.nextLine();
-		String[] data = new String[] {id, name, address};
-		AmazonCustomer cust = AmazonCustomer.createAmazonCustomer(data);
-		if (cust != null) {
-			customer.add(cust);
-			cust.setCart(new AmazonCart(cust, new Date()));
+		String address = input.nextLine();
+		
+		if (!AmazonUtil.isValidInt(id)) {
+			System.out.println("Error No ID given");
+			return;
+		}
+		
+		if (Integer.parseInt(id) < 0) {
+			System.out.println("Error Customer ID must be positive!");
+			return;
+		}
+		
+		int idx = findCustomerById(Integer.parseInt(id));
+		
+		if (idx >= 0) {
+			System.out.println("Customer ID already exist!");
+		} else {
+			String[] data = new String[] {id, name, address};
+			AmazonCustomer cust = AmazonCustomer.createAmazonCustomer(data);
+			if (cust != null) {
+				customer.add(cust);
+				cust.setCart(new AmazonCart(cust, new Date()));
+			} else {
+				System.out.println("Error Failed to create Customer!");
+			}
 		}
 	}
 	
@@ -334,15 +358,13 @@ public class AmazonProductManager {
 	/*
 	 * Add the error checking later	
 	 */
-		String id = "";
-		String type = "";
-		String cashValue = "";
-		System.out.print("Enter the Customer id: ");
-		id = input.nextLine();
+		
+		
+		String id = promptCustomerID();
 		System.out.print("Enter the type of credit ([1]: Cash, [2]: Check, [3]: Card): ");
-		type = input.nextLine();
+		String type = input.nextLine();
 		System.out.print("Enter Cash value: ");
-		cashValue = input.nextLine();
+		String cashValue = input.nextLine();
 		AmazonCredit cred = null;
 		
 		if (type.equals("1")) {
@@ -382,26 +404,34 @@ public class AmazonProductManager {
 	}
 	
 	public void showCreditFromCustomer() {
-		for (AmazonCustomer cust: customer) {
-			cust.showCredit();
+		
+		String id  = promptCustomerID();
+		int idx = findCustomerById(Integer.parseInt(id));
+		
+		if (idx >= 0) {
+			customer.get(idx).showCredit();
+		} else {
+			System.out.println("Customer does not exist!");
 		}
+		
+		
 	}
 	
 	public void addProductInWishList() throws AmazonProductException {
-		System.out.println("Enter the Customer id: ");
-		String id = input.nextLine();
-		System.out.println("Enter the product ID to incllude in the Wishlist: ");
-		String productID = input.nextLine();
-		AmazonProduct product = productList.findProductByIndex(Integer.parseInt(productID));
 		
+		String id = promptCustomerID();
+		System.out.print("Enter the product ID to include in the Wishlist: ");
+		String productID = input.nextLine();
+		AmazonProduct product = productList.findProductByID(Integer.parseInt(productID));
+		//Error for non valid idx
 		int idx = findCustomerById(Integer.parseInt(id));
 		customer.get(idx).addProductInWishList(product);
 	}
 	
 	public void removeProductFromWishList() {
-		System.out.print("Enter the Customer id: ");
-		String id = input.nextLine();
-		System.out.print("Enter the Product ID to remove in the Wishlist");
+		
+		String id = promptCustomerID();
+		System.out.print("Enter the Product ID to remove in the Wishlist: ");
 		String productID = input.nextLine();
 		
 		int idx = findCustomerById(Integer.parseInt(id));
@@ -414,82 +444,141 @@ public class AmazonProductManager {
 	}
 	
 	public void showWishList() {
-		for (AmazonCustomer cust: customer) {
-			cust.showWishList();
+		String id = promptCustomerID();
+		
+		if (!AmazonUtil.isValidInt(id)) {
+			System.out.println("Invalid ID entered! ");
+		} else {
+			int idx = findCustomerById(Integer.parseInt(id));
+			
+			if (idx >= 0) {
+				customer.get(idx).showWishList();
+			} else {
+				System.out.println("Customer does not exist!");
+			}
 		}
 	}
 	/*
 	 * SKIP THE CART STUFF FOR NOW
 	 */
 	public void addProductInCart() throws AmazonProductException {
-		System.out.print("Enter the Customer id: ");
-		String id = input.nextLine();
-		System.out.println("Enter the Product ID to buy from you cart: ");
+		
+		String id = promptCustomerID();
+		System.out.print("Enter the Product ID to buy from you cart: ");
 		String productID = input.nextLine();
-		System.out.println("Enter the number of items to put in cart: ");
+		System.out.print("Enter the number of items to put in cart: ");
 		String quantity = input.nextLine();
 		
-		AmazonProduct prod = productList.findProductByIndex(Integer.parseInt(productID));
+		//throw here for null object
+		AmazonProduct prod = productList.findProductByID(Integer.parseInt(productID));
 		AmazonCartItem item = new AmazonCartItem(prod, Integer.parseInt(quantity));
 		
 		int idx = findCustomerById(Integer.parseInt(id));
-		customer.get(idx).addItemInCart(item);
+		if (idx >= 0) {
+			customer.get(idx).addItemInCart(item);
 		
-		System.out.printf("Cart updated: [ %s of %s added for customer %s %n", quantity, productID, id);
-		
+			System.out.printf("Cart updated: [ %s of %s added for customer %s ] %n", quantity, productID, id);
+		}
 	}
 	
-	public void removeProductFromCart() {}
+	public void removeProductFromCart() {
+		String id = promptCustomerID();
+		System.out.print("Enter the product ID");
+		String productID = input.nextLine();
+		int idx = findCustomerById(Integer.parseInt(id));
+		if (idx >= 0) {
+			AmazonProduct prod = productList.findProductByID(Integer.parseInt(productID)); 
+			if (prod != null) {
+				customer.get(idx).removeProductFromCart(prod);
+			}
+		}
+	}
 	
 	public void showProductsInCart() {
-		
+		String id = promptCustomerID();
+		int idx = findCustomerById(Integer.parseInt(id));
+		if (idx >= 0) {
+			customer.get(idx).showCart();
+		} else {
+			System.out.println("Cannot find customer");
+		}
 	}
 	
 	public void payCart() {
-		System.out.print("Enter the Customer id: ");
-		String id = input.nextLine();
+		
+		String id = promptCustomerID();
 		int idx = findCustomerById(Integer.parseInt(id));
-		//payment size
+
 		AmazonCustomer cust = customer.get(idx);
-		int n = cust.getSize();
-		System.out.printf("Select the payment method [from 0 to %d] %n", n);
+		//Grab the payment size
+		int n = cust.getSize() - 1;
+		System.out.printf("Select the payment method [from 0 to %d]: ", n);
 		String choice = input.nextLine();
-		
-		cust.pay(cust.payment(Integer.parseInt(choice)));
-	
-		
+		/*
+		 * FIX THIS: HANDLING USER INPUT AND ERROR CHECKING FOR INVALID INPUT
+		 */
+		cust.pay(cust.payment(Integer.parseInt(choice)));	
 	}
 	
-	/*
-	 * 
-	 * ADD error checking later
-	 * Add find product by id
+	
+	/**
+	 * Methods add comments to amazon products
+	 * Ask for user inputs and then verify validity
+	 * If valid then add to customer comment list else display error message
 	 */
 	public void addCommentToProduct() {
-		System.out.println("Enter the Customer id: ");
-		String id = input.nextLine();
-		System.out.println("Enter the product ID to comment: ");
+		
+		String id = promptCustomerID();
+		System.out.print("Enter the product ID to comment: ");
 		String productId = input.nextLine();
-		;
-		System.out.println("Enter the comment: ");
+		
+		System.out.print("Enter the comment: ");
 		String comment = input.nextLine();
 		
-		System.out.println("Enter the stars: ");
+		System.out.print("Enter the stars: ");
 		String stars = input.nextLine();
 		
-		AmazonComment comments = new AmazonComment(null);
-		comments.setComment(comment);
-		comments.setStars(Float.parseFloat(stars));
+		
+		
+		int idx = findCustomerById(Integer.parseInt(id));
+		
+		//Check if customer exist
+		if (idx < 0) {
+			System.out.printf("Cannot Find Customer with ID: %s%n", id);
+		}
+		int productidx = customer.get(idx).productToCommentsID(productId);
+		
+		//Check if product was made successfully
+		if (productidx >= 0) {
+
+			//return the comment object and set the comments and rating
+			AmazonComment c = customer.get(idx).getComments(productidx);
+			c.setComment(comment);
+			c.setStars(Float.parseFloat(stars));
+			
+		} else {
+			System.out.printf("Error cannot find the product with product ID: %s %n", productId);
+		}
+		
 	}
-	
+	/**
+	 * 
+	 */
 	public void showComments() {
-		System.out.println("Enter the Customer id: ");
-		String customerID = input.nextLine();
+		
+		String customerID = promptCustomerID();
 		
 		int idx = findCustomerById(Integer.parseInt(customerID));
-		customer.get(idx).showComments();
+		
+		if (idx >= 0) customer.get(idx).showComments();
+		else System.out.println("Customer not found!");
 	}
 	
+	/**
+	 * Helper function to find the customer ID
+	 * @param idx the customer ID the user input
+	 * @return an integer index where the Customer can be found
+	 */
 	public int findCustomerById(int idx) {
 		for (int i = 0; i < customer.size(); ++i) {
 			if (customer.get(i).getID() == idx) {
@@ -498,7 +587,16 @@ public class AmazonProductManager {
 		}
 		return -1;
 	}
-	
+	/**
+	 * Helper Function to prompt the user for Customer ID
+	 * @return a string containing the customer ID
+	 */
+	public String promptCustomerID() {
+		System.out.print("Enter the Customer ID: ");
+		String usrInput = input.nextLine();
+		
+		return usrInput;
+	}
 	//Entry point
 	public static void main(String[] args) {
 		AmazonProductManager manager = new AmazonProductManager();

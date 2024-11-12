@@ -228,6 +228,15 @@ public class AmazonProductList {
 		return bestsellers.get(idx);
 	}
 	
+	public AmazonProduct findProductByID(int id) {
+		for (AmazonProduct c: bestsellers) {
+			if (c.getId() == id) {
+				return c;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * 
 	 * @return size of arraylist

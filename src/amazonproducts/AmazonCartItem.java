@@ -18,7 +18,7 @@ public class AmazonCartItem {
 	}
 	
 	public String toString() {
-		String val = product.toString() + ", quantity = " + quantity;
+		String val = "["+  product.toString() + "]"+ ", quantity = " + quantity;
 		return val;
 	}
 }

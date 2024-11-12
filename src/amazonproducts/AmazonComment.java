@@ -11,7 +11,7 @@ public class AmazonComment {
 	
 	public String toString() {
 		
-		return String.format("- ProdId: %s - Comment: %s - rate: %.2f", product.toString(), comment, stars);
+		return String.format("- ProdId:[%s] - Comment: %s - rate: %.2f", product.toString(), comment, stars);
 	}
 
 	public String getComment() {
