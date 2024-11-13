@@ -14,6 +14,9 @@ public class AmazonCard extends AmazonCredit {
 	}
 	
 	public static AmazonCard createCredit(String[] data) {
+		if (data == null) return null;
+		if (data.length != 3) return null;
+		
 		if (!AmazonUtil.isStringEmpty(data)) {
 			
 			//verify if the float value is valid

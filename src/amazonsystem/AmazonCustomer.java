@@ -21,6 +21,8 @@ public class AmazonCustomer {
 	}
 	
 	public static AmazonCustomer createAmazonCustomer(String[] data) {
+		if (data == null) return null;
+		//We need 3 arguemtns
 		if (data.length != 3) return null;
 		
 		

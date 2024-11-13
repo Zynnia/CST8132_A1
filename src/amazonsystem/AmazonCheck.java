@@ -11,6 +11,10 @@ public class AmazonCheck extends AmazonCredit{
 	}
 	
 	public static AmazonCheck createCheck(String[] data) {
+		if (data == null) return null;
+		
+		if (data.length != 2) return null;
+		
 		//Assume acccountNumber first then data
 		if (!AmazonUtil.isStringEmpty(data)) {
 			if (!AmazonUtil.isValidFloat(data[1])) return null;
