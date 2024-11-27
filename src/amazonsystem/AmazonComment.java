@@ -10,8 +10,10 @@ public class AmazonComment {
 	}
 	
 	public String toString() {
-		
-		return String.format("- ProdId:[%s] - Comment: %s - rate: %.2f", product.toString(), comment, stars);
+		String name =  product.getName();
+		int len = name.length();
+		String var = product.getId() + ", " + name.substring(0, Math.min(20, len));
+		return String.format("- ProdId:[%s] - Comment: %s - rate: %.2f", var, comment, stars);
 	}
 
 	public String getComment() {

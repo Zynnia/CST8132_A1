@@ -25,15 +25,15 @@ public class AmazonCart implements AmazonPayable{
 		return val;
 	}
 	
+	
+	/*
+	 * Re-implement this as it is wrong
+	 * we want to grab the cart item by product id.
+	 */
 	public AmazonCartItem getItem(int idx) {
 		return items.get(idx);
 	}
-	//Implement later
-	public boolean hasItem(AmazonProduct e) {
-		return false;
-	}
-
-	//Implement later
+	
 	public boolean pay(float amount) {
 		totalValue = calcSubTotal();
 		if (amount - totalValue >= 0) {
@@ -63,12 +63,20 @@ public class AmazonCart implements AmazonPayable{
 	
 	
 	public void getCartDetails() {
-		System.out.printf("[Customer: %s]%n", customer.getName());
-		for (AmazonCartItem it : items) {
-			System.out.println(it.toString());
-		}
 		
-		System.out.println("* Total value: " + calcSubTotal());
+		if (items.size() != 0) {
+			System.out.printf("[Customer: %s]%n", customer.getName());
+			int i = 0;
+			for (AmazonCartItem it : items) {
+				String var = String.format("Item[i] = ", i);
+				System.out.println(var + it.toString());
+				i++;
+			}
+		
+			System.out.println("* Total value: " + calcSubTotal());
+		} else {
+			System.out.println("Cart is empty");
+		}
 	}
 	
 	

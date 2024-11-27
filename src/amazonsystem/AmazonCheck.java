@@ -17,7 +17,7 @@ public class AmazonCheck extends AmazonCredit{
 		
 		//Assume acccountNumber first then data
 		if (!AmazonUtil.isStringEmpty(data)) {
-			if (!AmazonUtil.isValidFloat(data[1])) return null;
+			if (!AmazonUtil.isValidFloatInput(data[1])) return null;
 			
 			float amount = Float.parseFloat(data[1]);
 			

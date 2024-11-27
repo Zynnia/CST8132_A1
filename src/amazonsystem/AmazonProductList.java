@@ -252,6 +252,7 @@ public class AmazonProductList {
 		System.out.println("PRODUCTLIST .................");
 		System.out.println("BOOKLIST .................");
 		for (AmazonProduct s: bestsellers) {
+			
 			System.out.println("[" + s.toString() + "]");
 		}
 		System.out.println("............................");
@@ -333,7 +334,10 @@ public class AmazonProductList {
 			String objEntries = obj.toString().toLowerCase();
 			
 			if (objEntries.contains(str.toLowerCase())) {
-				System.out.println("[" + obj.toString() + "]");
+				String name = obj.getName();
+				int n = name.length();
+				String var = obj.getId() +", " + name.substring(0, Math.min(20, n));
+				System.out.println("[" + var + "]");
 				found = true;
 			}
 		}

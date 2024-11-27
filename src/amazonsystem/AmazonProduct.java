@@ -145,8 +145,9 @@ public class AmazonProduct {
 	
 	public String toString() {
 		
+		
 		String str = id + ", " 
-				+ name + ", " 
+				+ name+ ", " 
 				+ category.getCategoryName() + ", "
 				+ subCategory.getSubCategory() + ", "
 				+ imageURL + ", "
@@ -161,6 +162,8 @@ public class AmazonProduct {
 
 
 	public static AmazonProduct createAmazonProduct(String[] data) {
+		if (data == null) return null;
+		
 		if (data.length < 10) {
 			return null;
 		}

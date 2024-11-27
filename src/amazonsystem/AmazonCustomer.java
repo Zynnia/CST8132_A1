@@ -22,9 +22,8 @@ public class AmazonCustomer {
 	
 	public static AmazonCustomer createAmazonCustomer(String[] data) {
 		if (data == null) return null;
-		//We need 3 arguemtns
-		if (data.length != 3) return null;
 		
+		if (data.length != 3) return null;
 		
 		if (!AmazonUtil.isStringEmpty(data)) {
 			if (!AmazonUtil.isValidInt(data[0])) return null;
@@ -59,7 +58,10 @@ public class AmazonCustomer {
 	}
 	//FIXED THIS
 	public void removeProductFromWishList(int productID) {
-		if (wishList.isEmpty()) return;
+		if (wishList.isEmpty()) {
+			System.out.println("Nothing to remove. Wish List is empty!");
+			return;
+		}
 		
 		int valToRemove = -1;
 		
@@ -86,10 +88,18 @@ public class AmazonCustomer {
 	}
 	
 	public void showWishList() {
-		
+		if (wishList.size() == 0) {
+			System.out.println("Nothing to print. Wish List is emtpy!");
+			return;
+		}
+		System.out.println("Printing wishlist ..............");
 		for (int i = 0; i < wishList.size(); ++i) {
-			String val = "Item[" + i + "]=";
-			System.out.println(val + "[" + wishList.get(i).toString() + "]");
+			String val = "Item[" + i + "] = ";
+			
+			String name =  wishList.get(i).getName();
+			int len = name.length();
+			String var = wishList.get(i).getId() + ", " + name.substring(0, Math.min(20, len));
+			System.out.println(val + "[" + var + "]");
 		}
 	}
 	
@@ -153,6 +163,12 @@ public class AmazonCustomer {
 	//public void setComment() {}
 	
 	public void showComments() {
+		
+		if (comments.size() == 0) {
+			System.out.println("Nothing to show. Comment List emtpy");
+			return;
+		}
+		
 		for (AmazonComment c: comments) {
 			System.out.println(c.toString());
 		}

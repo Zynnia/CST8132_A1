@@ -31,16 +31,27 @@ public class AmazonUtil {
 		
 		//if string is empty return false
 		if (str.isEmpty() || str == null || str.isBlank()) return false;
-		for (int i = 0; i < str.length(); ++i) {
+		/*for (int i = 0; i < str.length(); ++i) {
 			if (!Character.isDigit(str.charAt(i))) {
 				return false;
 			}
+		}*/
+		
+		int x  = -1;
+		try {
+			x = Integer.parseInt(str);
+		} catch (NumberFormatException m) {
+			return false;
 		}
+		if (x < 0) return false;
+		
+		
 		return true;
 	}
 	
 	/**HELPER METHOD
 	 * This method verify if a string is a valid float
+	 * skips the currency sign
 	 * @param str String representing a number
 	 * @return true if a valid float else false
 	 */
@@ -48,7 +59,7 @@ public class AmazonUtil {
 		str = str.replace(",","");
 		
 		//if string is empty return false
-		if (str.isEmpty() || str == null) return false;
+		if (str.isEmpty() || str == null || str.isBlank()) return false;
 		
 		//decimal counter. Count the number of decimal in the string
 		int decimal = 0;
@@ -69,10 +80,31 @@ public class AmazonUtil {
 		return true;
 	}
 	
+	/**
+	 * This method will test the of the user to check if it is a valid float
+	 * @param str - float to convert
+	 * @return true if valid else false
+	 */
+	public static boolean isValidFloatInput(String str) {
+		//dummy variable
+		float x = -1.f;
+		
+		try {
+			x = Float.parseFloat(str);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		//Check if the converted value is positive if not return false
+		if (x < 0.f) return false;
+		
+		return true;
+		
+	}
+	
 	//Check if data entry is blank
 	public static boolean isStringEmpty(String[] data) {
 		for (String e : data) {
-			if (e.isBlank() || e.isEmpty()) {
+			if (e.isBlank() || e.isEmpty() || e == null) {
 				return true;
 			}
 		}

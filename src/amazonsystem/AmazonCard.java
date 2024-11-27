@@ -20,7 +20,7 @@ public class AmazonCard extends AmazonCredit {
 		if (!AmazonUtil.isStringEmpty(data)) {
 			
 			//verify if the float value is valid
-			if (!AmazonUtil.isValidFloat(data[2])) return null;
+			if (!AmazonUtil.isValidFloatInput(data[2])) return null;
 			
 			float amount = Float.parseFloat(data[2]);
 			
