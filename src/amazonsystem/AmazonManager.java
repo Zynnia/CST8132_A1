@@ -181,7 +181,9 @@ public class AmazonManager {
 	
 	public void exit() {
 		System.out.println("===========================================================================");
-		System.out.println("||    [End of Application (Author: Brian Huynh - 041165733)]             ||");
+		System.out.println("||                      End of Application                               ||");
+		System.out.println("||            (Author: Brian Huynh - 041165733)                          ||");
+		System.out.println("||            (Author: Chukwukamadu Chima-Uzoka - 041139951)             ||");
 		System.out.println("===========================================================================");
 		
 		input.close();
