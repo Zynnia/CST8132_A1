@@ -26,7 +26,7 @@ public class AmazonManager {
 		//Testing purposes.
 		
 		//path = "Amazon-Products.csv";
-		if (path.isEmpty() || path.isBlank()) path = DEFAULTPATH;
+		if (path.isEmpty() || path.isBlank() || path == null) path = DEFAULTPATH;
 		
 		productList.createList(path);
 		
@@ -182,8 +182,6 @@ public class AmazonManager {
 	public void exit() {
 		System.out.println("===========================================================================");
 		System.out.println("||                      End of Application                               ||");
-		System.out.println("||            (Author: Brian Huynh - 041165733)                          ||");
-		System.out.println("||            (Author: Chukwukamadu Chima-Uzoka - 041139951)             ||");
 		System.out.println("===========================================================================");
 		
 		input.close();
@@ -284,18 +282,18 @@ public class AmazonManager {
 				"===========================================================================",
 				"||                        [Menu A2 - Amazon Manager]                     ||",
 				"===========================================================================",
-				"||                                  || USER                              ||",
-				"||                                  || Credit options .................. ||",
-				"|| ADMIN                            || [F] Add credit to customer        ||",
-				"||                                  || [G] Show credits from customer    ||",
-				"|| Product options ................ || Wishlist options ................ ||",
-				"|| [A] Load product list            || [H] Add product in wishlist       ||",
-				"|| [B] Show product list            || [I] Remove product from wishlist  ||",
-				"|| [C] Search products              || [J] Show products from wishlist   ||",
+				"|| ADMIN                            || USER                              ||",
+				"|| Product options ................ || Credit options .................. ||",
+				"|| [A] Load product list            || [F] Add credit to customer        ||",
+				"|| [B] Show product list            || [G] Show credits from customer    ||",
+				"|| [C] Search products              || Wishlist options ................ ||",
+				"|| Customer options ............... || [H] Add product in wishlist       ||",
+				"|| [D] Add customer                 || [I] Remove product from wishlist  ||",
+				"|| [E] Show customers               || [J] Show products from wishlist   ||",
 				"||                                  || Cart options .................... ||",
-				"|| Customer options ............... || [K] Add product in cart           ||",
-				"|| [D] Add customer                 || [L] Remove product from cart      ||",
-				"|| [E] Show customers               || [M] Show products from cart       ||",
+				"||                                  || [K] Add product in cart           ||",
+				"||                                  || [L] Remove product from cart      ||",
+				"||                                  || [M] Show products from cart       ||",
 				"||                                  || [N] Buy products from cart        ||",
 				"||                                  || Comment options ................. ||",
 				"|| ................................ || [O] Comment products bought       ||",
@@ -484,8 +482,13 @@ public class AmazonManager {
 			String productID = input.nextLine();
 			
 			if (AmazonUtil.isValidInt(productID)) {
+				//Check if the wishlist is empty
+				if (customer.get(idx).getWishlistSize() == 0) {
+					System.out.println("Nothing to remove. Wish List is empty!");
+					return;
+				}
 				customer.get(idx).removeProductFromWishList(Integer.parseInt(productID));
-				System.out.printf("[Product %s removed from customer %s wish list] %n", productID, id);
+				
 			} else {
 				throw new AmazonException("Invalid Product ID");
 			}
@@ -519,9 +522,7 @@ public class AmazonManager {
 		if (productList.getSize() == 0) {
 			throw new AmazonException("Cannot add to Cart. Product List is empty");
 		}
-		/*
-		 * error checking here
-		 */
+	
 		String id = promptCustomerID();
 		
 		//validate customer id
@@ -561,9 +562,7 @@ public class AmazonManager {
 	}
 	
 	public void removeProductFromCart() throws AmazonException {
-		/*
-		 * Check if cart is empty or not
-		 */
+		
 		String id = promptCustomerID();
 		
 		//Is the id a valid integer?
@@ -665,11 +664,11 @@ public class AmazonManager {
 		System.out.print("Enter the stars: ");
 		String stars = input.nextLine();
 		
-		if (!AmazonUtil.isValidFloat(stars)) throw new AmazonException("Invalid Rating enters");
+		if (!AmazonUtil.isValidFloatInput(stars)) throw new AmazonException("Invalid Rating enters");
 		
 
 		float rating = -1.f;
-		
+		//Check if the rating is within 0 and 5
 		try {
 			rating = Float.parseFloat(stars);
 			if (rating < 0 || rating > 5.f) throw new AmazonException("Rating must be between 0.0 and 5.0");
